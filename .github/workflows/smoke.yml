@@ -56,19 +56,4 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
-          script: |
-            set +e
-            APK=$(ls app/build/outputs/apk/release/*x86_64*.apk | head -n1)
-            echo "APK: $APK"
-            adb install -r "$APK"
-            adb shell am start -W -n com.naimpro.app/.MainActivity
-            sleep 20
-            echo "=== process ==="
-            adb shell pidof com.naimpro.app || echo "PROCESS_DEAD"
-            echo "=== crash buffer ==="
-            adb logcat -d -b crash
-            echo "=== app log ==="
-            adb logcat -d | grep -E "AndroidRuntime|FATAL|naimpro|Naim" | tail -n 200
-            adb logcat -d -b crash | grep -q "com.naimpro.app" && exit 1
-            adb shell pidof com.naimpro.app > /dev/null || exit 1
-            exit 0
+          script: bash .github/scripts/emulator-smoke.sh
