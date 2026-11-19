@@ -32,7 +32,7 @@ jobs:
           java-version: '17'
 
       - name: Gradle kur
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       # The ubuntu runner image already ships the Android SDK and cmdline-tools.
       # The old setup action tried to install the (no longer published) "tools"
