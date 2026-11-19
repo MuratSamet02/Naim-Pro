@@ -1,0 +1,33 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.kotlin/
+
+# Local configuration
+local.properties
+*.hprof
+
+# IDE
+.idea/
+*.iml
+.vscode/
+captures/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Signing material - never commit
+*.jks
+*.keystore
+keystore.properties
+
+# Keystore backups / secrets
+secrets/
+*.b64
+
+# Generated reports
+app/build/
+build/reports/

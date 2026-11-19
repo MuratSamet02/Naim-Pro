@@ -1,0 +1,17 @@
+# Normalise line endings in the repository so a checkout on any OS builds the
+# same way. Shell scripts and Gradle wrappers must stay LF; Windows batch files
+# keep CRLF.
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ogg binary
+*.jar binary
+*.jks binary
+*.gz binary

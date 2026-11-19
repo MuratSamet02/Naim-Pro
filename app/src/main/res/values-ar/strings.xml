@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_tagline">أوقات صلاة بلا إعلانات ومفتوحة المصدر</string>
+
+    <string name="prayer_imsak">الإمساك</string>
+    <string name="prayer_gunes">الشروق</string>
+    <string name="prayer_ogle">الظهر</string>
+    <string name="prayer_ikindi">العصر</string>
+    <string name="prayer_aksam">المغرب</string>
+    <string name="prayer_yatsi">العشاء</string>
+
+    <string name="nav_home">الأوقات</string>
+    <string name="nav_qibla">القبلة</string>
+    <string name="nav_monthly">الجدول</string>
+    <string name="nav_calendar">التقويم</string>
+    <string name="nav_more">المزيد</string>
+
+    <string name="home_next_prayer">الصلاة القادمة</string>
+    <string name="home_remaining">متبقٍ</string>
+    <string name="home_today_times">أوقات اليوم</string>
+    <string name="home_location">الموقع</string>
+    <string name="home_change_location">تغيير الموقع</string>
+    <string name="home_hijri_today">هجري</string>
+    <string name="home_now">الآن</string>
+    <string name="home_passed">انتهى</string>
+    <string name="home_upcoming">التالي</string>
+    <string name="home_settings">الإعدادات</string>
+    <string name="home_method_label">الطريقة: %1$s</string>
+
+    <string name="qibla_title">بوصلة القبلة</string>
+    <string name="qibla_aligned">أنت متجه إلى القبلة</string>
+    <string name="qibla_turn_right">أدر باتجاه عقارب الساعة</string>
+    <string name="qibla_turn_left">أدر عكس عقارب الساعة</string>
+    <string name="qibla_accuracy_low">دقة المستشعر منخفضة. حرّك الهاتف على شكل رقم ثمانية للمعايرة.</string>
+    <string name="qibla_no_sensor">لا يوجد مستشعر بوصلة في هذا الجهاز.</string>
+    <string name="qibla_distance">المسافة إلى الكعبة: %1$s كم</string>
+    <string name="qibla_degrees">%1$s°</string>
+    <string name="qibla_permission_needed">يلزم موقعك لتحديد اتجاه القبلة، ويبقى على جهازك فقط.</string>
+
+    <string name="monthly_title">جدول الأوقات الشهري</string>
+    <string name="monthly_imsakiye">الإمساكية</string>
+    <string name="monthly_export_pdf">مشاركة كملف PDF</string>
+    <string name="monthly_export_csv">مشاركة كملف CSV</string>
+    <string name="monthly_export_success">تم إنشاء الملف</string>
+    <string name="monthly_export_error">تعذّر إنشاء الملف</string>
+    <string name="monthly_share_title">جدول أوقات Naim Pro</string>
+    <string name="monthly_previous">الشهر السابق</string>
+    <string name="monthly_next">الشهر التالي</string>
+    <string name="monthly_day">اليوم</string>
+    <string name="monthly_hijri">هجري</string>
+
+    <string name="calendar_title">الأيام والليالي الدينية</string>
+    <string name="calendar_upcoming">الأيام القادمة</string>
+    <string name="calendar_notifications">إشعارات الأيام الدينية</string>
+    <string name="calendar_notifications_desc">تنبيه قبل يوم من الليالي المباركة والأعياد.</string>
+    <string name="calendar_hijri_today">التاريخ الهجري لليوم</string>
+    <string name="calendar_offset">فرق الأيام الهجرية</string>
+    <string name="calendar_offset_desc">اضبط ±يومين حسب رؤية الهلال المحلية.</string>
+
+    <string name="tracking_title">متابعة الصلوات</string>
+    <string name="tracking_streak">التتابع</string>
+    <string name="tracking_streak_days">%1$d يومًا</string>
+    <string name="tracking_week">هذا الأسبوع</string>
+    <string name="tracking_month">هذا الشهر</string>
+    <string name="tracking_completion">الإتمام</string>
+    <string name="tracking_mark_prayed">صُلّيت</string>
+    <string name="tracking_mark_qada">قضاء</string>
+    <string name="tracking_mark_missed">لم تُصلَّ</string>
+    <string name="tracking_clear">تصفير اليوم</string>
+    <string name="tracking_only_device">تُحفظ هذه البيانات على جهازك فقط.</string>
+
+    <string name="zikir_title">المسبحة</string>
+    <string name="zikir_target">الهدف</string>
+    <string name="zikir_reset">تصفير</string>
+    <string name="zikir_history">السجل</string>
+    <string name="zikir_total">مجموع الأذكار</string>
+    <string name="zikir_completed">تم بلوغ الهدف</string>
+    <string name="zikir_custom">ذكرك الخاص</string>
+    <string name="zikir_volume_keys">العدّ بأزرار الصوت</string>
+    <string name="zikir_vibrate">اهتزاز</string>
+
+    <string name="content_title">المحتوى</string>
+    <string name="content_esma">أسماء الله الحسنى</string>
+    <string name="content_dua">دعاء اليوم</string>
+    <string name="content_ayet">آية اليوم</string>
+    <string name="content_hadis">حديث اليوم</string>
+    <string name="content_source">المصدر: %1$s</string>
+
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_general">عام</string>
+    <string name="settings_calculation">الحساب</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_theme">المظهر</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_method">طريقة الحساب</string>
+    <string name="settings_madhab">مذهب العصر</string>
+    <string name="settings_high_latitude">قاعدة خطوط العرض العالية</string>
+    <string name="settings_corrections">تصحيح الأوقات</string>
+    <string name="settings_corrections_desc">اضبط كل صلاة بمقدار ±30 دقيقة.</string>
+    <string name="settings_minutes_value">%1$d دقيقة</string>
+    <string name="settings_notifications_enabled">إشعارات الصلاة</string>
+    <string name="settings_prayer_sound">نوع الإشعار لكل صلاة</string>
+    <string name="settings_pre_reminder">تذكير قبل الصلاة</string>
+    <string name="settings_pre_reminder_minutes">قبل %1$d دقيقة</string>
+    <string name="settings_ezan_volume">مستوى صوت الأذان</string>
+    <string name="settings_vibration">اهتزاز</string>
+    <string name="settings_custom_sound">ملف صوتي خاص بك</string>
+    <string name="settings_custom_sound_pick">اختر ملفًا صوتيًا</string>
+    <string name="settings_custom_sound_clear">العودة إلى الافتراضي</string>
+    <string name="settings_cami_mode">وضع المسجد</string>
+    <string name="settings_cami_mode_desc">يكتم الهاتف 15 دقيقة عند دخول الوقت. يحتاج صلاحية سياسة الإشعارات.</string>
+    <string name="settings_theme_mode">السمة</string>
+    <string name="settings_theme_system">حسب النظام</string>
+    <string name="settings_theme_light">فاتح</string>
+    <string name="settings_theme_dark">داكن</string>
+    <string name="settings_theme_amoled">أسود AMOLED</string>
+    <string name="settings_dynamic_color">الألوان الديناميكية (Material You)</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_font_scale">حجم الخط</string>
+    <string name="settings_online_compare">مقارنة عبر الإنترنت مع ديانت</string>
+    <string name="settings_online_compare_desc">مغلق افتراضيًا. عند تشغيله تُنزَّل أوقات المنطقة المختارة فقط.</string>
+    <string name="settings_backup">النسخ الاحتياطي</string>
+    <string name="settings_backup_export">تصدير نسخة احتياطية</string>
+    <string name="settings_backup_import">استعادة من نسخة احتياطية</string>
+    <string name="settings_backup_export_done">تم حفظ النسخة</string>
+    <string name="settings_backup_import_done">تمت الاستعادة</string>
+    <string name="settings_backup_error">فشلت العملية</string>
+    <string name="settings_permissions">الصلاحيات</string>
+    <string name="settings_battery">تحسين البطارية</string>
+    <string name="settings_battery_desc">بعض الشركات تمنع المنبهات. استثنِ Naim Pro من تحسين البطارية.</string>
+    <string name="settings_battery_open">فتح الإعدادات</string>
+    <string name="settings_notification_permission">صلاحية الإشعارات</string>
+    <string name="settings_exact_alarm_permission">صلاحية المنبه الدقيق</string>
+    <string name="settings_location_permission">صلاحية الموقع التقريبي</string>
+    <string name="settings_dnd_permission">صلاحية عدم الإزعاج</string>
+    <string name="settings_permission_granted">ممنوحة</string>
+    <string name="settings_permission_missing">غير ممنوحة</string>
+    <string name="settings_permission_explain_location">يُستخدم الموقع فقط لحساب أوقات الصلاة في مكانك. الموقع التقريبي كافٍ ولا يغادر الجهاز.</string>
+    <string name="settings_permission_explain_notification">مطلوبة لعرض إشعارات أوقات الصلاة.</string>
+    <string name="settings_permission_explain_alarm">مطلوبة لتعمل الأوقات في وقتها بالضبط.</string>
+    <string name="settings_permission_explain_dnd">مطلوبة ليتمكن وضع المسجد من كتم الهاتف.</string>
+    <string name="settings_about_version">الإصدار %1$s</string>
+    <string name="settings_about_license">الرخصة: GPL-3.0</string>
+    <string name="settings_about_source">الشيفرة المصدرية</string>
+    <string name="settings_about_privacy">الخصوصية: لا يتم جمع أي بيانات</string>
+
+    <string name="location_title">اختر الموقع</string>
+    <string name="location_search_hint">ابحث عن مدينة أو منطقة</string>
+    <string name="location_use_gps">استخدم موقعي</string>
+    <string name="location_gps_explain">يُطلب الموقع التقريبي فقط. لا حاجة للإنترنت.</string>
+    <string name="location_turkey">تركيا</string>
+    <string name="location_world">العالم</string>
+    <string name="location_empty">لا نتائج</string>
+
+    <string name="common_ok">حسنًا</string>
+    <string name="common_cancel">إلغاء</string>
+    <string name="common_save">حفظ</string>
+    <string name="common_close">إغلاق</string>
+    <string name="common_back">رجوع</string>
+    <string name="common_on">مفعّل</string>
+    <string name="common_off">معطّل</string>
+    <string name="common_error">حدث خطأ</string>
+
+    <string name="channel_prayer_name">إشعار الصلاة</string>
+    <string name="channel_prayer_desc">إشعارات الأذان وأوقات الصلاة</string>
+    <string name="channel_reminder_name">تذكير الصلاة</string>
+    <string name="channel_reminder_desc">تذكيرات قبل وقت الصلاة</string>
+    <string name="channel_events_name">الأيام الدينية</string>
+    <string name="channel_events_desc">تذكيرات الليالي المباركة والأعياد</string>
+    <string name="channel_info_name">معلومات التطبيق</string>
+    <string name="channel_info_desc">رسائل الصيانة والمعلومات</string>
+    <string name="notification_prayer_title">وقت %1$s</string>
+    <string name="notification_prayer_body">%1$s · %2$s</string>
+    <string name="notification_reminder_title">الصلاة بعد %1$d دقيقة</string>
+    <string name="notification_reminder_body">يبدأ وقت %1$s الساعة %2$s.</string>
+    <string name="action_stop_audio">إيقاف الصوت</string>
+    <string name="notification_event_title">يوم ديني قادم</string>
+
+    <string name="widget_small_label">Naim Pro · الصلاة القادمة</string>
+    <string name="widget_medium_label">Naim Pro · أوقات اليوم</string>
+    <string name="widget_large_label">Naim Pro · الجدول الكامل</string>
+    <string name="widget_countdown_suffix">متبقٍ</string>
+
+    <string name="method_diyanet">ديانت (تركيا)</string>
+    <string name="method_diyanet_safi">ديانت · عصر الشافعي</string>
+    <string name="method_mwl">رابطة العالم الإسلامي</string>
+    <string name="method_isna">الجمعية الإسلامية لأمريكا الشمالية</string>
+    <string name="method_umm_al_qura">أم القرى (مكة)</string>
+    <string name="method_egypt">الهيئة المصرية العامة للمساحة</string>
+    <string name="method_karachi">جامعة كراتشي</string>
+    <string name="method_kuwait">الكويت</string>
+    <string name="method_singapore">سنغافورة</string>
+
+    <string name="madhab_standard">قياسي (ظل 1)</string>
+    <string name="madhab_hanafi">حنفي (ظل 2)</string>
+
+    <string name="high_lat_none">افتراضي (بالزاوية)</string>
+    <string name="high_lat_middle">منتصف الليل</string>
+    <string name="high_lat_seventh">سُبع الليل</string>
+    <string name="high_lat_angle">حسب الزاوية</string>
+
+    <string name="mode_ezan">صوت الأذان</string>
+    <string name="mode_short_alert">تنبيه قصير</string>
+    <string name="mode_vibrate">اهتزاز فقط</string>
+    <string name="mode_silent">صامت</string>
+
+    <string name="event_hijri_new_year">رأس السنة الهجرية</string>
+    <string name="event_ashura">يوم عاشوراء</string>
+    <string name="event_mawlid">ليلة المولد</string>
+    <string name="event_raghaib">ليلة الرغائب</string>
+    <string name="event_miraj">ليلة الإسراء والمعراج</string>
+    <string name="event_baraah">ليلة البراءة</string>
+    <string name="event_ramadan_start">بداية رمضان</string>
+    <string name="event_qadr_night">ليلة القدر</string>
+    <string name="event_eid_al_fitr">عيد الفطر</string>
+    <string name="event_arafah">يوم عرفة</string>
+    <string name="event_eid_al_adha">عيد الأضحى</string>
+
+    <string name="more_tracking">متابعة الصلوات</string>
+    <string name="more_zikir">المسبحة</string>
+    <string name="more_content">المحتوى</string>
+    <string name="more_esma">أسماء الله الحسنى</string>
+    <string name="more_settings">الإعدادات</string>
+    <string name="more_about">حول</string>
+    <string name="more_widgets">إضافة ويدجت</string>
+    <string name="more_widgets_desc">اضغط مطوّلًا على الشاشة الرئيسية، أضف ويدجت واختر Naim Pro.</string>
+
+    <string name="about_intro">Naim Pro تطبيق مواقيت صلاة مفتوح المصدر، بلا إعلانات ولا متتبّعات، ويعمل دون اتصال بالإنترنت.</string>
+    <string name="about_offline">يعمل دون إنترنت</string>
+    <string name="about_offline_desc">تُحسب المواقيت على جهازك. يأتي التطبيق بأكثر من 19,000 مستوطنة، دون حاجة إلى الشبكة.</string>
+    <string name="about_privacy">الخصوصية أولًا</string>
+    <string name="about_privacy_desc">لا إعلانات ولا تحليلات ولا تقارير أعطال ولا حسابات. الموقع تقريبي فقط، ويُطلب بإذنك ولا يغادر جهازك.</string>
+    <string name="about_license">برنامج حر</string>
+    <string name="about_license_desc">مرخّص بموجب GPL-3.0. يمكنك فحص الشيفرة وتعديلها ومشاركتها.</string>
+    <string name="about_credits">شكر وتقدير</string>
+    <string name="about_credits_desc">بيانات المدن من GeoNames (CC BY 4.0). جميع الأصوات مُصنَّعة أصلًا. قُورنت المواقيت مع بيانات ديانت العلنية.</string>
+</resources>

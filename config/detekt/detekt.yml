@@ -1,0 +1,81 @@
+# Detekt configuration for Naim Pro.
+#
+# The defaults are used as a base (buildUponDefaultConfig = true); this file only
+# adjusts the rules that do not fit a Compose-heavy, offline-first app.
+build:
+  maxIssues: 0
+
+processors:
+  active: true
+
+complexity:
+  # Compose screens are declarative trees: splitting them into many tiny
+  # @Composable functions for the sake of a line count hurts readability, so
+  # annotated functions are exempt from the size/complexity rules.
+  LongMethod:
+    threshold: 120
+    ignoreAnnotated:
+      - Composable
+  LongParameterList:
+    functionThreshold: 10
+    constructorThreshold: 12
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    thresholdInFiles: 30
+    thresholdInClasses: 30
+    thresholdInInterfaces: 20
+    thresholdInObjects: 30
+    ignoreDeprecated: true
+    ignorePrivate: true
+    ignoreOverridden: true
+  CyclomaticComplexMethod:
+    threshold: 20
+    ignoreAnnotated:
+      - Composable
+  LargeClass:
+    threshold: 600
+
+style:
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    maxLineLength: 140
+  UnusedPrivateMember:
+    ignoreAnnotated:
+      - Composable
+  UnusedParameter:
+    active: false
+  ReturnCount:
+    max: 6
+  ForbiddenComment:
+    active: false
+  ThrowsCount:
+    max: 3
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 4
+
+naming:
+  FunctionNaming:
+    active: false
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_A-Za-z0-9]*'
+    propertyPattern: '[A-Za-z][_A-Za-z0-9]*'
+    privatePropertyPattern: '[A-Za-z][_A-Za-z0-9]*'
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  SwallowedException:
+    active: false
+  InstanceOfCheckForException:
+    active: false
+  TooGenericExceptionThrown:
+    active: false
+
+performance:
+  SpreadOperator:
+    active: false
+
+coroutines:
+  GlobalCoroutineUsage:
+    active: false

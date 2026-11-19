@@ -1,0 +1,30 @@
+---
+name: Hata bildirimi
+about: Bir hata veya yanlış vakit bildirin
+title: "[hata] "
+labels: bug
+---
+
+**Ne oldu?**
+
+**Ne bekliyordunuz?**
+
+**Adımlar**
+1.
+2.
+3.
+
+**Vakit hatasıysa**
+- Şehir:
+- Tarih:
+- Beklenen saat:
+- Görünen saat:
+- Seçili yöntem / mezhep / yüksek enlem kuralı:
+
+**Cihaz**
+- Model:
+- Android sürümü:
+- Naim Pro sürümü (Ayarlar → Hakkında):
+
+**Ekler**
+Ekran görüntüsü veya log varsa ekleyin.

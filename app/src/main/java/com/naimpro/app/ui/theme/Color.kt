@@ -1,0 +1,47 @@
+package com.naimpro.app.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+// Brand palette, derived from the original Naim Pro mark.
+val BrandDeep = Color(0xFF0B2A2E)
+val BrandTeal = Color(0xFF2E6F73)
+val BrandTealLight = Color(0xFF7FC4C6)
+val BrandGold = Color(0xFFC9A227)
+val BrandGoldLight = Color(0xFFF3D98A)
+val BrandSand = Color(0xFFF6F2E7)
+
+val LightPrimary = Color(0xFF17606A)
+val LightOnPrimary = Color(0xFFFFFFFF)
+val LightPrimaryContainer = Color(0xFFB9ECEF)
+val LightOnPrimaryContainer = Color(0xFF00201F)
+val LightSecondary = Color(0xFF7A5900)
+val LightOnSecondary = Color(0xFFFFFFFF)
+val LightSecondaryContainer = Color(0xFFF3D98A)
+val LightOnSecondaryContainer = Color(0xFF251A00)
+val LightBackground = Color(0xFFFBFDFC)
+val LightOnBackground = Color(0xFF161D1D)
+val LightSurface = Color(0xFFF6FAF9)
+val LightOnSurface = Color(0xFF161D1D)
+val LightSurfaceVariant = Color(0xFFDAE5E4)
+val LightOnSurfaceVariant = Color(0xFF3F4949)
+val LightOutline = Color(0xFF6F7979)
+val LightError = Color(0xFFBA1A1A)
+
+val DarkPrimary = Color(0xFF6BD5DA)
+val DarkOnPrimary = Color(0xFF00373A)
+val DarkPrimaryContainer = Color(0xFF004F54)
+val DarkOnPrimaryContainer = Color(0xFFB9ECEF)
+val DarkSecondary = Color(0xFFE3C46A)
+val DarkOnSecondary = Color(0xFF3C2F00)
+val DarkSecondaryContainer = Color(0xFF574500)
+val DarkOnSecondaryContainer = Color(0xFFF3D98A)
+val DarkBackground = Color(0xFF07100F)
+val DarkOnBackground = Color(0xFFDDE4E3)
+val DarkSurface = Color(0xFF0D1716)
+val DarkOnSurface = Color(0xFFDDE4E3)
+val DarkSurfaceVariant = Color(0xFF3F4949)
+val DarkOnSurfaceVariant = Color(0xFFBEC9C8)
+val DarkOutline = Color(0xFF889392)
+
+val AmoledBackground = Color(0xFF000000)
+val AmoledSurface = Color(0xFF050808)

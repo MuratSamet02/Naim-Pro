@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Naim Pro</string>
+    <string name="app_tagline">Reklamsız, açık kaynak namaz vakti</string>
+
+    <!-- Prayers -->
+    <string name="prayer_imsak">İmsak</string>
+    <string name="prayer_gunes">Güneş</string>
+    <string name="prayer_ogle">Öğle</string>
+    <string name="prayer_ikindi">İkindi</string>
+    <string name="prayer_aksam">Akşam</string>
+    <string name="prayer_yatsi">Yatsı</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Vakitler</string>
+    <string name="nav_qibla">Kıble</string>
+    <string name="nav_monthly">İmsakiye</string>
+    <string name="nav_calendar">Takvim</string>
+    <string name="nav_more">Daha</string>
+
+    <!-- Home -->
+    <string name="home_next_prayer">Sonraki vakit</string>
+    <string name="home_remaining">kaldı</string>
+    <string name="home_today_times">Bugünün vakitleri</string>
+    <string name="home_location">Konum</string>
+    <string name="home_change_location">Konumu değiştir</string>
+    <string name="home_hijri_today">Hicri</string>
+    <string name="home_now">Şu an</string>
+    <string name="home_passed">Geçti</string>
+    <string name="home_upcoming">Sırada</string>
+    <string name="home_settings">Ayarlar</string>
+    <string name="home_method_label">Yöntem: %1$s</string>
+
+    <!-- Qibla -->
+    <string name="qibla_title">Kıble Pusulası</string>
+    <string name="qibla_aligned">Kıble yönündesiniz</string>
+    <string name="qibla_turn_right">Saat yönünde dönün</string>
+    <string name="qibla_turn_left">Saat yönünün tersine dönün</string>
+    <string name="qibla_accuracy_low">Sensör hassasiyeti düşük. Telefonu 8 çizerek kalibre edin.</string>
+    <string name="qibla_no_sensor">Bu cihazda pusula sensörü bulunamadı.</string>
+    <string name="qibla_distance">Kâbe\'ye uzaklık: %1$s km</string>
+    <string name="qibla_degrees">%1$s°</string>
+    <string name="qibla_permission_needed">Kıble yönü için konumunuz gerekli. Konum yalnızca cihazınızda kullanılır.</string>
+
+    <!-- Monthly / imsakiye -->
+    <string name="monthly_title">Aylık Vakit Tablosu</string>
+    <string name="monthly_imsakiye">İmsakiye</string>
+    <string name="monthly_export_pdf">PDF olarak paylaş</string>
+    <string name="monthly_export_csv">CSV olarak paylaş</string>
+    <string name="monthly_export_success">Dosya oluşturuldu</string>
+    <string name="monthly_export_error">Dosya oluşturulamadı</string>
+    <string name="monthly_share_title">Naim Pro vakit tablosu</string>
+    <string name="monthly_previous">Önceki ay</string>
+    <string name="monthly_next">Sonraki ay</string>
+    <string name="monthly_day">Gün</string>
+    <string name="monthly_hijri">Hicri</string>
+
+    <!-- Calendar -->
+    <string name="calendar_title">Dini Günler ve Geceler</string>
+    <string name="calendar_upcoming">Yaklaşan günler</string>
+    <string name="calendar_notifications">Dini gün bildirimleri</string>
+    <string name="calendar_notifications_desc">Kandil ve bayramlardan bir gün önce hatırlatma alın.</string>
+    <string name="calendar_hijri_today">Bugünün hicri tarihi</string>
+    <string name="calendar_offset">Hicri gün farkı</string>
+    <string name="calendar_offset_desc">Yerel hilal gözlemine göre ±2 gün ayarlayabilirsiniz.</string>
+
+    <!-- Tracking -->
+    <string name="tracking_title">Namaz Takibi</string>
+    <string name="tracking_streak">Seri</string>
+    <string name="tracking_streak_days">%1$d gün</string>
+    <string name="tracking_week">Bu hafta</string>
+    <string name="tracking_month">Bu ay</string>
+    <string name="tracking_completion">Tamamlama</string>
+    <string name="tracking_mark_prayed">Kılındı</string>
+    <string name="tracking_mark_qada">Kaza</string>
+    <string name="tracking_mark_missed">Kılınmadı</string>
+    <string name="tracking_clear">Bugünü sıfırla</string>
+    <string name="tracking_only_device">Bu veriler yalnızca cihazınızda saklanır.</string>
+
+    <!-- Zikirmatik -->
+    <string name="zikir_title">Zikirmatik</string>
+    <string name="zikir_target">Hedef</string>
+    <string name="zikir_reset">Sıfırla</string>
+    <string name="zikir_history">Geçmiş</string>
+    <string name="zikir_total">Toplam zikir</string>
+    <string name="zikir_completed">Hedef tamamlandı</string>
+    <string name="zikir_custom">Kendi zikriniz</string>
+    <string name="zikir_volume_keys">Ses tuşlarıyla say</string>
+    <string name="zikir_vibrate">Titreşim</string>
+
+    <!-- Content -->
+    <string name="content_title">İçerikler</string>
+    <string name="content_esma">Esmâ-i Hüsnâ</string>
+    <string name="content_dua">Günün duası</string>
+    <string name="content_ayet">Günün ayeti</string>
+    <string name="content_hadis">Günün hadisi</string>
+    <string name="content_source">Kaynak: %1$s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_general">Genel</string>
+    <string name="settings_calculation">Hesaplama</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="settings_theme">Görünüm</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_method">Hesaplama yöntemi</string>
+    <string name="settings_madhab">İkindi mezhebi</string>
+    <string name="settings_high_latitude">Yüksek enlem kuralı</string>
+    <string name="settings_corrections">Vakit düzeltmeleri</string>
+    <string name="settings_corrections_desc">Her vakit için ±30 dakika arasında düzeltme yapabilirsiniz.</string>
+    <string name="settings_minutes_value">%1$d dk</string>
+    <string name="settings_notifications_enabled">Vakit bildirimleri</string>
+    <string name="settings_prayer_sound">Vakit bildirim türü</string>
+    <string name="settings_pre_reminder">Vakit öncesi hatırlatma</string>
+    <string name="settings_pre_reminder_minutes">%1$d dakika önce</string>
+    <string name="settings_ezan_volume">Ezan ses seviyesi</string>
+    <string name="settings_vibration">Titreşim</string>
+    <string name="settings_custom_sound">Kendi ses dosyanız</string>
+    <string name="settings_custom_sound_pick">Ses dosyası seç</string>
+    <string name="settings_custom_sound_clear">Varsayılana dön</string>
+    <string name="settings_cami_mode">Cami modu</string>
+    <string name="settings_cami_mode_desc">Vakit girdiğinde telefonu 15 dakika sessize alır. Bildirim erişimi izni gerekir.</string>
+    <string name="settings_theme_mode">Tema</string>
+    <string name="settings_theme_system">Sisteme uy</string>
+    <string name="settings_theme_light">Açık</string>
+    <string name="settings_theme_dark">Koyu</string>
+    <string name="settings_theme_amoled">AMOLED siyah</string>
+    <string name="settings_dynamic_color">Dinamik renk (Material You)</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_font_scale">Yazı boyutu</string>
+    <string name="settings_online_compare">Diyanet ile çevrim içi karşılaştırma</string>
+    <string name="settings_online_compare_desc">Varsayılan olarak kapalıdır. Açıldığında yalnızca seçtiğiniz ilçenin vakitleri indirilir.</string>
+    <string name="settings_backup">Yedekleme</string>
+    <string name="settings_backup_export">Yedeği dışa aktar</string>
+    <string name="settings_backup_import">Yedekten geri yükle</string>
+    <string name="settings_backup_export_done">Yedek kaydedildi</string>
+    <string name="settings_backup_import_done">Yedek geri yüklendi</string>
+    <string name="settings_backup_error">İşlem başarısız oldu</string>
+    <string name="settings_permissions">İzinler</string>
+    <string name="settings_battery">Pil optimizasyonu</string>
+    <string name="settings_battery_desc">Bazı üreticiler alarmları engeller. Naim Pro\'yu pil optimizasyonundan muaf tutun.</string>
+    <string name="settings_battery_open">Ayarları aç</string>
+    <string name="settings_notification_permission">Bildirim izni</string>
+    <string name="settings_exact_alarm_permission">Kesin alarm izni</string>
+    <string name="settings_location_permission">Yaklaşık konum izni</string>
+    <string name="settings_dnd_permission">Rahatsız etmeyin izni</string>
+    <string name="settings_permission_granted">Verildi</string>
+    <string name="settings_permission_missing">Verilmedi</string>
+    <string name="settings_permission_explain_location">Konum yalnızca bulunduğunuz yeri vakit hesabı için kullanılır. Yaklaşık konum yeterlidir ve hiçbir yere gönderilmez.</string>
+    <string name="settings_permission_explain_notification">Namaz vakti bildirimlerini göstermek için gereklidir.</string>
+    <string name="settings_permission_explain_alarm">Vakitlerin saniyesi saniyesine tetiklenmesi için gereklidir.</string>
+    <string name="settings_permission_explain_dnd">Cami modunun telefonu sessize alabilmesi için gereklidir.</string>
+    <string name="settings_about_version">Sürüm %1$s</string>
+    <string name="settings_about_license">Lisans: GPL-3.0</string>
+    <string name="settings_about_source">Kaynak kodu</string>
+    <string name="settings_about_privacy">Gizlilik: hiçbir veri toplanmaz</string>
+
+    <!-- Location picker -->
+    <string name="location_title">Konum Seç</string>
+    <string name="location_search_hint">İl, ilçe veya şehir ara</string>
+    <string name="location_use_gps">Konumumu kullan</string>
+    <string name="location_gps_explain">Yalnızca yaklaşık konum istenir. İnternet gerekmez.</string>
+    <string name="location_turkey">Türkiye</string>
+    <string name="location_world">Dünya</string>
+    <string name="location_empty">Sonuç bulunamadı</string>
+
+    <!-- Common -->
+    <string name="common_ok">Tamam</string>
+    <string name="common_cancel">Vazgeç</string>
+    <string name="common_save">Kaydet</string>
+    <string name="common_close">Kapat</string>
+    <string name="common_back">Geri</string>
+    <string name="common_on">Açık</string>
+    <string name="common_off">Kapalı</string>
+    <string name="common_error">Bir hata oluştu</string>
+
+    <!-- Notifications -->
+    <string name="channel_prayer_name">Vakit bildirimi</string>
+    <string name="channel_prayer_desc">Ezan ve vakit bildirimleri</string>
+    <string name="channel_reminder_name">Vakit hatırlatması</string>
+    <string name="channel_reminder_desc">Vakitten önce yapılan hatırlatmalar</string>
+    <string name="channel_events_name">Dini günler</string>
+    <string name="channel_events_desc">Kandil ve bayram hatırlatmaları</string>
+    <string name="channel_info_name">Uygulama bilgisi</string>
+    <string name="channel_info_desc">Bakım ve bilgilendirme mesajları</string>
+    <string name="notification_prayer_title">%1$s vakti</string>
+    <string name="notification_prayer_body">%1$s · %2$s</string>
+    <string name="notification_reminder_title">%1$d dakika sonra vakit</string>
+    <string name="notification_reminder_body">%1$s vakti %2$s\'de başlayacak.</string>
+    <string name="action_stop_audio">Sesi durdur</string>
+    <string name="notification_event_title">Yaklaşan dini gün</string>
+
+    <!-- Widgets -->
+    <string name="widget_small_label">Naim Pro · Sonraki vakit</string>
+    <string name="widget_medium_label">Naim Pro · Günün vakitleri</string>
+    <string name="widget_large_label">Naim Pro · Tam tablo</string>
+    <string name="widget_countdown_suffix">kaldı</string>
+
+    <!-- Enums -->
+    <string name="method_diyanet">Diyanet (Türkiye)</string>
+    <string name="method_diyanet_safi">Diyanet · Şâfiî ikindi</string>
+    <string name="method_mwl">Dünya Müslüman Birliği (MWL)</string>
+    <string name="method_isna">ISNA (Kuzey Amerika)</string>
+    <string name="method_umm_al_qura">Ümmü\'l-Kurâ (Mekke)</string>
+    <string name="method_egypt">Mısır Genel Araştırma</string>
+    <string name="method_karachi">Karaçi Üniversitesi</string>
+    <string name="method_kuwait">Kuveyt</string>
+    <string name="method_singapore">Singapur</string>
+
+    <string name="madhab_standard">Standart (gölge 1)</string>
+    <string name="madhab_hanafi">Hanefî (gölge 2)</string>
+
+    <string name="high_lat_none">Varsayılan (açı kullan)</string>
+    <string name="high_lat_middle">Gecenin ortası</string>
+    <string name="high_lat_seventh">Gecenin yedide biri</string>
+    <string name="high_lat_angle">Açıya göre kısalt</string>
+
+    <string name="mode_ezan">Ezan sesi</string>
+    <string name="mode_short_alert">Kısa uyarı</string>
+    <string name="mode_vibrate">Yalnızca titreşim</string>
+    <string name="mode_silent">Sessiz</string>
+
+    <string name="event_hijri_new_year">Hicri Yılbaşı</string>
+    <string name="event_ashura">Aşure Günü</string>
+    <string name="event_mawlid">Mevlid Kandili</string>
+    <string name="event_raghaib">Regaib Kandili</string>
+    <string name="event_miraj">Mirac Kandili</string>
+    <string name="event_baraah">Berat Kandili</string>
+    <string name="event_ramadan_start">Ramazan başlangıcı</string>
+    <string name="event_qadr_night">Kadir Gecesi</string>
+    <string name="event_eid_al_fitr">Ramazan Bayramı</string>
+    <string name="event_arafah">Arefe Günü</string>
+    <string name="event_eid_al_adha">Kurban Bayramı</string>
+
+    <string name="more_tracking">Namaz takibi</string>
+    <string name="more_zikir">Zikirmatik</string>
+    <string name="more_content">İçerikler</string>
+    <string name="more_esma">Esmâ-i Hüsnâ</string>
+    <string name="more_settings">Ayarlar</string>
+    <string name="more_about">Hakkında</string>
+    <string name="more_widgets">Widget ekle</string>
+    <string name="more_widgets_desc">Ana ekranına dokun, widget ekle, Naim Pro\'yu seç.</string>
+
+    <string name="about_intro">Naim Pro; reklamsız, izleyicisiz ve tamamen çevrimdışı çalışan açık kaynaklı bir namaz vakti uygulamasıdır.</string>
+    <string name="about_offline">Tamamen çevrimdışı</string>
+    <string name="about_offline_desc">Vakitler cihazında hesaplanır. 19.000\'den fazla yerleşim yeri uygulamayla birlikte gelir; internet gerekmez.</string>
+    <string name="about_privacy">Gizlilik önce gelir</string>
+    <string name="about_privacy_desc">Reklam, analitik, çökme raporu veya hesap yok. Konum yalnızca yaklaşık olarak, izin verirsen alınır ve cihazdan çıkmaz.</string>
+    <string name="about_license">Özgür yazılım</string>
+    <string name="about_license_desc">GPL-3.0 ile lisanslanmıştır. Kodu inceleyebilir, değiştirebilir ve paylaşabilirsin.</string>
+    <string name="about_credits">Emeği geçenler</string>
+    <string name="about_credits_desc">Şehir verisi GeoNames (CC BY 4.0). Sesler özgün olarak sentezlenmiştir. Vakit karşılaştırmaları Diyanet\'in kamuya açık verileriyle kalibre edilmiştir.</string>
+</resources>
