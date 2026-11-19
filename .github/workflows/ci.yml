@@ -54,7 +54,7 @@ jobs:
 
       - name: Test raporunu yükle
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-reports
           path: |
@@ -97,7 +97,7 @@ jobs:
         run: ./gradlew assembleDebug --console=plain
 
       - name: APK'yı yükle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: naim-pro-debug-apk
           path: app/build/outputs/apk/debug/*.apk
