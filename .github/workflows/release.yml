@@ -140,7 +140,7 @@ jobs:
           gh release upload "$TAG" dist/*.apk dist/*.aab --clobber
 
       - name: Artifact olarak da sakla
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: naim-pro-release
           path: dist/*
