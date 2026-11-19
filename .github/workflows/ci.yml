@@ -35,11 +35,12 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Android SDK kur
-        uses: android-actions/setup-android@v3
-
-      - name: SDK bileşenlerini kur
+      # The ubuntu runner image already ships the Android SDK and cmdline-tools.
+      # The old setup action tried to install the (no longer published) "tools"
+      # package and failed, so the needed components are installed directly.
+      - name: SDK bilesenlerini kur
         run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager --install "platforms;android-36" "build-tools;36.0.0" > /dev/null
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
@@ -85,11 +86,12 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Android SDK kur
-        uses: android-actions/setup-android@v3
-
-      - name: SDK bileşenlerini kur
+      # The ubuntu runner image already ships the Android SDK and cmdline-tools.
+      # The old setup action tried to install the (no longer published) "tools"
+      # package and failed, so the needed components are installed directly.
+      - name: SDK bilesenlerini kur
         run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager --install "platforms;android-36" "build-tools;36.0.0" > /dev/null
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
