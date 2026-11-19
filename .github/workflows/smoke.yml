@@ -1,0 +1,74 @@
+name: Smoke test
+
+# Release (R8) APK'sini gerçek bir emülatörde açar ve çökme olup olmadığını
+# doğrular. Amaç, yalnızca minify edilmiş sürümde ortaya çıkan başlangıç
+# hatalarını CI'da yakalamak.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  launch:
+    name: Release APK açılış testi
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: JDK 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: SDK bileşenlerini kur
+        run: |
+          SDKMGR="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1)"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          "$SDKMGR" --install "platforms;android-36" "build-tools;36.0.0" > /dev/null
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      # İmza sırları verilmez: burada önemli olan R8 çıktısı, imza değil.
+      - name: Release APK derle
+        run: ./gradlew assembleRelease --console=plain
+
+      - name: KVM'i etkinleştir
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Emülatörde aç
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          script: |
+            set +e
+            APK=$(ls app/build/outputs/apk/release/*x86_64*.apk | head -n1)
+            echo "APK: $APK"
+            adb install -r "$APK"
+            adb shell am start -W -n com.naimpro.app/.MainActivity
+            sleep 20
+            echo "=== process ==="
+            adb shell pidof com.naimpro.app || echo "PROCESS_DEAD"
+            echo "=== crash buffer ==="
+            adb logcat -d -b crash
+            echo "=== app log ==="
+            adb logcat -d | grep -E "AndroidRuntime|FATAL|naimpro|Naim" | tail -n 200
+            adb logcat -d -b crash | grep -q "com.naimpro.app" && exit 1
+            adb shell pidof com.naimpro.app > /dev/null || exit 1
+            exit 0
