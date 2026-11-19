@@ -43,7 +43,7 @@ içinde belgelenmiştir.
 | `assembleDebug` | ✅ Başarılı |
 | `assembleRelease` | ✅ Başarılı (R8 full mode + resource shrinking) |
 | `bundleRelease` | ✅ Başarılı (AAB) |
-| İmza doğrulama | ✅ APK Signature Scheme v1 + v2 + v3, RSA 4096 |
+| İmza doğrulama | ✅ APK Signature Scheme v2 + v3, RSA 4096 (v1 yok: minSdk 26) |
 
 ## 4. Düzeltilen kritik hatalar
 

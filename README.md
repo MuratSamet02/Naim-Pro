@@ -84,9 +84,11 @@ Uygulama Google Play dışında dağıtıldığı için Android, kurulum sıras�
 "Play Protect bu uygulamanın geliştiricisini tanımıyor" veya "bilinmeyen
 kaynak" uyarısı gösterebilir. Bu, uygulamanın zararlı olduğu anlamına gelmez:
 
-- APK, projeye ait **sabit bir sürüm anahtarıyla** imzalanır (v1 + v2 + v3);
-  debug anahtarı kullanılmaz.
-- Sürümün imzası `apksigner verify --print-certs` ile doğrulanabilir.
+- APK, projeye ait **sabit bir sürüm anahtarıyla** imzalanır (APK Signature
+  Scheme v2 + v3); debug anahtarı kullanılmaz.
+- Sürümün imzası `apksigner verify --verbose --print-certs` ile doğrulanabilir.
+  (v1/JAR imzası yoktur: Android 8+ için v2 zaten yeterlidir ve AGP, `minSdk`
+  24 ve üzerindeyken v1 imzasını bilinçli olarak atlar.)
 - İsterseniz APK'yı kendiniz derleyip karşılaştırabilirsiniz (aşağıdaki bölüm).
 
 Kuruluma devam etmek için uyarı ekranında **"Yine de yükle"** seçeneğini

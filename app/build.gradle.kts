@@ -55,10 +55,12 @@ android {
                 storePassword = keystorePassword
                 keyAlias = keyAliasValue
                 keyPassword = keyPasswordValue
-                // v1 is kept alongside v2/v3 so that every installer and APK
-                // verifier (including Play Protect's scanner and older OEM
-                // package managers) can validate the signature.
-                enableV1Signing = true
+                // v2 + v3 cover every device this app supports (minSdk 26).
+                // AGP deliberately skips the v1 (JAR) scheme once minSdk >= 24:
+                // v2 already supersedes it, so a v1 signature would only make
+                // the APK larger without adding compatibility. Setting
+                // enableV1Signing = true here has no effect for that reason.
+                enableV1Signing = false
                 enableV2Signing = true
                 enableV3Signing = true
             }

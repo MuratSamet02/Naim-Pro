@@ -20,8 +20,9 @@ Açılışta çökme düzeltmesi.
 - `INTERNET` ve `ACCESS_NETWORK_STATE` izinleri kaldırıldı; uygulama tamamen
   çevrimdışı ve hiçbir ağ bağlantısı kurmuyor. Bununla birlikte hiçbir şey
   yapmayan "Diyanet ile çevrim içi karşılaştırma" anahtarı da kaldırıldı.
-- Sürüm imzasına v1 (JAR) imzası eklendi (v2 + v3 ile birlikte), böylece tüm
-  kurulum ve doğrulama araçları imzayı geçerli sayar.
+- Sürüm imzası APK Signature Scheme v2 + v3 olarak doğrulandı. `minSdk` 26
+  olduğu için v1 (JAR) imzası yoktur; AGP bu durumda v1'i bilinçli olarak
+  atlar, çünkü v2 tüm desteklenen cihazlarda geçerlidir.
 
 ### Altyapı
 - GitHub Actions'ta gerçek emülatörde release APK açılış testi eklendi
