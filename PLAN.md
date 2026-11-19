@@ -15,7 +15,7 @@ izleyicisiz, açık kaynak ve orijinalinden daha optimize bir sürümünü sıf�
 | Reklam / analitik / crash-reporting yok | Bağımlılık listesinde hiçbiri yok; `dependencies` bloğu denetlenebilir |
 | Google Play Services yok (F-Droid uyumlu) | androidx dışında Google bağımlılığı yok |
 | GPL-3.0 | `LICENSE`, başlık bildirimleri, README |
-| Offline-first | Şehir verisi gömülü, vakitler cihazda hesaplanır, internet izni isteğe bağlı |
+| Offline-first | Şehir verisi gömülü, vakitler cihazda hesaplanır, hiçbir ağ izni istenmez |
 | Yalnızca yaklaşık konum | `ACCESS_COARSE_LOCATION`, `ACCESS_FINE_LOCATION` yok |
 | Özgün görsel/içerik | İkon ve widget'lar bu proje için üretildi; sesler sentezlendi |
 | Her dış kaynak belgelenir | `ATTRIBUTION.md` |

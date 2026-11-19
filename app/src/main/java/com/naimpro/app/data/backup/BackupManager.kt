@@ -48,7 +48,6 @@ data class BackupSettings(
     val dynamicColor: Boolean = true,
     val language: String = "tr",
     val fontScale: Float = 1.0f,
-    val onlineComparisonEnabled: Boolean = false,
 )
 
 @Serializable
@@ -150,7 +149,6 @@ class BackupManager(
             dynamicColor = dynamicColor,
             language = language.tag,
             fontScale = fontScale,
-            onlineComparisonEnabled = onlineComparisonEnabled,
         )
 
     private fun BackupSettings.toSettings(current: AppSettings): AppSettings =
@@ -181,6 +179,5 @@ class BackupManager(
             dynamicColor = dynamicColor,
             language = AppLanguage.entries.firstOrNull { it.tag == language } ?: current.language,
             fontScale = fontScale.coerceIn(0.85f, 1.6f),
-            onlineComparisonEnabled = onlineComparisonEnabled,
         )
 }

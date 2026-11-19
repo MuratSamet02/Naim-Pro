@@ -5,7 +5,7 @@ Tarih: 19 Kasım 2026
 
 ## 1. Birim testleri
 
-`./gradlew testDebugUnitTest` — **70 test, 0 hata, 0 atlanan.**
+`./gradlew testDebugUnitTest` — **73 test, 0 hata, 0 atlanan.**
 
 | Test sınıfı | Test sayısı | Kapsam |
 |---|---|---|
@@ -15,6 +15,7 @@ Tarih: 19 Kasım 2026
 | `QiblaCalculatorTest` | 11 | 6 şehir için kıble açısı, Kâbe mesafesi, normalizasyon, tolerans |
 | `PrayerTimesTest` | 9 | Model doğrulaması, sıralama, sonraki vakit seçimi |
 | `ContentLibraryTest` | 5 | Gömülü içeriklerin bütünlüğü (boş kayıt yok, kaynak alanı dolu) |
+| `CityCatalogAssetTest` | 3 | Şehir kataloğu bütünlüğü (≥ 19.000 satır, Ankara) ve gzip algılama |
 
 ### Diyanet karşılaştırması
 
@@ -42,7 +43,7 @@ içinde belgelenmiştir.
 | `assembleDebug` | ✅ Başarılı |
 | `assembleRelease` | ✅ Başarılı (R8 full mode + resource shrinking) |
 | `bundleRelease` | ✅ Başarılı (AAB) |
-| İmza doğrulama | ✅ APK Signature Scheme v2 + v3, RSA 4096 |
+| İmza doğrulama | ✅ APK Signature Scheme v1 + v2 + v3, RSA 4096 |
 
 ## 4. Düzeltilen kritik hatalar
 
@@ -51,6 +52,19 @@ içinde belgelenmiştir.
    kayıyordu. Diyanet karşılaştırma testi bu hatayı yakaladı.
 2. **Kutup enlemlerinde sıralama bozulması.** Gece yarısı güneşi / kutup
    gecesi durumlarında vakitler sırasız çıkabiliyordu; `orderSafely()` eklendi.
+3. **Açılışta çökme (1.0.0).** Paketleme sırasında `assets/cities.csv.gz`
+   dosyası `assets/cities.csv` adıyla açılıyordu; yükleyici `.gz` adını
+   aradığı için uygulama `FileNotFoundException` ile kapanıyordu. Yükleyici
+   artık iki adı da dener ve gzip olup olmadığını içerikten algılar. Hata
+   yalnızca GitHub Actions'ta üretilen APK'da görüldüğü için emülatör tabanlı
+   açılış testi CI'ya eklendi.
+
+## 3a. Emülatör açılış testi
+
+`.github/workflows/smoke.yml` her `main` push'unda release (R8) APK'yi
+API 34 x86_64 emülatörde kurar, `MainActivity`'yi açar ve `logcat -b crash`
+çıktısında uygulamaya ait kayıt arar. Süreç ölmüşse veya crash buffer'da
+`com.naimpro.app` varsa iş başarısız olur.
 
 ## 5. Alarm / Doze doğrulaması
 
@@ -69,8 +83,9 @@ Yerel emülatörde doğrulanan senaryolar:
 | Bildirim izni verilmemesi | Alarm kurulmaz, uygulama çalışmaya devam eder | ✅ |
 
 Not: Doze doğrulaması emülatörde `adb shell dumpsys deviceidle force-idle`
-ile yapılmıştır; GitHub Actions'ta emülatör çalıştırma maliyeti nedeniyle CI'ya
-dahil edilmemiştir.
+ile yapılmıştır. Açılış (crash) testi GitHub Actions'ta çalışır; Doze ve
+yeniden başlatma senaryoları süre maliyeti nedeniyle yalnızca yerelde
+doğrulanmıştır.
 
 ## 6. Optimizasyon ölçümleri
 

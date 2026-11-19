@@ -117,8 +117,6 @@
     <string name="settings_dynamic_color">Dynamic colour (Material You)</string>
     <string name="settings_language">Language</string>
     <string name="settings_font_scale">Text size</string>
-    <string name="settings_online_compare">Online comparison with Diyanet</string>
-    <string name="settings_online_compare_desc">Off by default. When enabled only the selected district\'s times are downloaded.</string>
     <string name="settings_backup">Backup</string>
     <string name="settings_backup_export">Export backup</string>
     <string name="settings_backup_import">Restore from backup</string>

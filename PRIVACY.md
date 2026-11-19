@@ -46,16 +46,9 @@ izinlerin hiçbiri verilmeden de çalışır.
 | `VIBRATE` | Titreşimli bildirim ve kıble hizalaması | Hayır |
 | `WAKE_LOCK` | Ezan çalarken ekranı kısa süre uyanık tutmak | Hayır |
 | `ACCESS_NOTIFICATION_POLICY` | Cami modu: vakitte telefonu sessize almak | Hayır |
-| `INTERNET` / `ACCESS_NETWORK_STATE` | İsteğe bağlı Diyanet karşılaştırması (varsayılan **kapalı**) | Hayır |
 
 Konum verisi **hiçbir zaman** cihazdan çıkmaz; hesaplama cihazda yapılır.
-
-## İsteğe bağlı internet kullanımı
-
-"Ayarlar → Diyanet ile çevrim içi karşılaştırma" seçeneği **varsayılan olarak
-kapalıdır**. Açarsanız, yalnızca seçtiğiniz ilçenin vakit listesini indirmek için
-diyanet.gov.tr adresine istek gönderilir. Bu istek kimlik bilgisi içermez ve
-sonucu yalnızca cihazınızda karşılaştırma amacıyla kullanılır.
+Uygulama hiçbir ağ bağlantısı kurmaz ve bu nedenle `INTERNET` izni istemez.
 
 ## Çocuklar
 

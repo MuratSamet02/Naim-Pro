@@ -2,7 +2,9 @@ package com.naimpro.app.data.city
 
 import android.content.Context
 import com.naimpro.app.domain.model.Location
+import java.io.BufferedInputStream
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.time.ZoneId
 import java.util.zip.GZIPInputStream
@@ -33,8 +35,12 @@ class CityRepository(private val context: Context) {
         entries?.let { return it }
         synchronized(lock) {
             entries?.let { return it }
+            val parsed = load()
+            // The catalogue must never be able to break the app: if the asset is
+            // unreadable the built in shortlist keeps times and search working.
+            val source = if (parsed.isEmpty()) fallbackEntries() else parsed
             val loaded =
-                load().sortedWith(
+                source.sortedWith(
                     compareByDescending<Entry> { it.isTurkey }.thenByDescending { it.population },
                 )
             entries = loaded
@@ -112,15 +118,47 @@ class CityRepository(private val context: Context) {
 
     private fun load(): List<Entry> {
         val result = ArrayList<Entry>(20_000)
-        context.assets.open(ASSET_NAME).use { raw ->
-            GZIPInputStream(raw, BUFFER_SIZE).use { gz ->
-                BufferedReader(InputStreamReader(gz, Charsets.UTF_8), BUFFER_SIZE).use { reader ->
+        val raw = openCatalog() ?: return result
+        raw.use { stream ->
+            val buffered = BufferedInputStream(stream, BUFFER_SIZE)
+            val body: InputStream =
+                if (isGzip(buffered.peekTwo())) {
+                    GZIPInputStream(buffered, BUFFER_SIZE)
+                } else {
+                    buffered
+                }
+            body.use { input ->
+                BufferedReader(InputStreamReader(input, Charsets.UTF_8), BUFFER_SIZE).use { reader ->
                     reader.forEachCityLine { line -> parse(line)?.let(result::add) }
                 }
             }
         }
         return result
     }
+
+    /**
+     * AAPT2 gunzips assets whose name ends in `.gz` while packaging, so a real
+     * APK usually contains `cities.csv` even though the repository stores
+     * `cities.csv.gz`. Both names are accepted and the payload is sniffed
+     * instead of trusting the file name.
+     */
+    private fun openCatalog(): InputStream? {
+        for (name in CATALOG_NAMES) {
+            val stream = runCatching { context.assets.open(name) }.getOrNull()
+            if (stream != null) return stream
+        }
+        return null
+    }
+
+    private fun BufferedInputStream.peekTwo(): ByteArray {
+        mark(2)
+        val head = ByteArray(2)
+        val read = read(head)
+        reset()
+        return if (read == 2) head else ByteArray(0)
+    }
+
+    private fun fallbackEntries(): List<Entry> = FALLBACK_LINES.mapNotNull(::parse)
 
     /** Streams the CSV body, skipping the leading format/header lines. */
     private inline fun BufferedReader.forEachCityLine(action: (String) -> Unit) {
@@ -162,9 +200,55 @@ class CityRepository(private val context: Context) {
     }
 
     companion object {
+        /** Name used in the repository; AAPT2 may repackage it as [PLAIN_ASSET_NAME]. */
         const val ASSET_NAME = "cities.csv.gz"
+        const val PLAIN_ASSET_NAME = "cities.csv"
+
+        private val CATALOG_NAMES = listOf(ASSET_NAME, PLAIN_ASSET_NAME)
         private const val HEADER_PREFIX = "v1"
         private const val BUFFER_SIZE = 64 * 1024
+
+        /** True when [head] starts with the gzip magic bytes (`1f 8b`). */
+        fun isGzip(head: ByteArray): Boolean {
+            if (head.size < 2) return false
+            return head[0] == 0x1F.toByte() && head[1] == 0x8B.toByte()
+        }
+
+        /**
+         * Minimal built in catalogue, used only when the packaged asset cannot be
+         * read. Keeping the app usable matters more than completeness here.
+         */
+        private val FALLBACK_LINES =
+            listOf(
+                "TR|Ankara|Ankara|39.9334|32.8597|Europe/Istanbul|5663000",
+                "TR|İstanbul|İstanbul|41.0082|28.9784|Europe/Istanbul|15462452",
+                "TR|İzmir|İzmir|38.4237|27.1428|Europe/Istanbul|4438829",
+                "TR|Bursa|Bursa|40.1956|29.0600|Europe/Istanbul|3101833",
+                "TR|Antalya|Antalya|36.8969|30.7133|Europe/Istanbul|2619832",
+                "TR|Konya|Konya|37.8746|32.4932|Europe/Istanbul|2312954",
+                "TR|Adana|Adana|37.0000|35.3213|Europe/Istanbul|2267016",
+                "TR|Gaziantep|Gaziantep|37.0662|37.3833|Europe/Istanbul|2118561",
+                "TR|Kayseri|Kayseri|38.7312|35.4787|Europe/Istanbul|1428516",
+                "TR|Trabzon|Trabzon|41.0027|39.7168|Europe/Istanbul|808974",
+                "TR|Diyarbakır|Diyarbakır|37.9144|40.2306|Europe/Istanbul|1798309",
+                "TR|Şanlıurfa|Şanlıurfa|37.1591|38.7969|Europe/Istanbul|2079037",
+                "TR|Van|Van|38.4942|43.3800|Europe/Istanbul|1137019",
+                "TR|Erzurum|Erzurum|39.9043|41.2679|Europe/Istanbul|767848",
+                "TR|Samsun|Samsun|41.2867|36.3300|Europe/Istanbul|1376989",
+                "TR|Denizli|Denizli|37.7765|29.0864|Europe/Istanbul|1056829",
+                "TR|Eskişehir|Eskişehir|39.7767|30.5206|Europe/Istanbul|898369",
+                "TR|Muğla|Muğla|37.2153|28.3636|Europe/Istanbul|1007734",
+                "DE|Berlin|Berlin|52.5200|13.4050|Europe/Berlin|3644826",
+                "GB|London|England|51.5074|-0.1278|Europe/London|8961989",
+                "US|New York|New York|40.7128|-74.0060|America/New_York|8419000",
+                "SA|Makkah|Makkah al Mukarramah|21.4225|39.8262|Asia/Riyadh|1325000",
+                "SA|Medina|Al Madinah al Munawwarah|24.4672|39.6111|Asia/Riyadh|1186000",
+                "AZ|Bakı|Bakı|40.4093|49.8671|Asia/Baku|2300500",
+                "NL|Amsterdam|Noord-Holland|52.3676|4.9041|Europe/Amsterdam|1149000",
+                "FR|Paris|Île-de-France|48.8566|2.3522|Europe/Paris|2148000",
+                "AT|Viyana|Wien|48.2082|16.3738|Europe/Vienna|1911191",
+                "CH|Zürich|Zürich|47.3769|8.5417|Europe/Zurich|421878",
+            )
 
         fun normalize(input: String): String =
             input

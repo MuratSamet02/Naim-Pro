@@ -117,8 +117,6 @@
     <string name="settings_dynamic_color">الألوان الديناميكية (Material You)</string>
     <string name="settings_language">اللغة</string>
     <string name="settings_font_scale">حجم الخط</string>
-    <string name="settings_online_compare">مقارنة عبر الإنترنت مع ديانت</string>
-    <string name="settings_online_compare_desc">مغلق افتراضيًا. عند تشغيله تُنزَّل أوقات المنطقة المختارة فقط.</string>
     <string name="settings_backup">النسخ الاحتياطي</string>
     <string name="settings_backup_export">تصدير نسخة احتياطية</string>
     <string name="settings_backup_import">استعادة من نسخة احتياطية</string>

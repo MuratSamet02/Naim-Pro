@@ -3,6 +3,30 @@
 Bu proje [Conventional Commits](https://www.conventionalcommits.org/) ve
 [Semantic Versioning](https://semver.org/lang/tr/) kullanır.
 
+## [1.0.1] — 2026-11-19
+
+Açılışta çökme düzeltmesi.
+
+### Düzeltilenler
+- **Açılışta çökme:** Paketleme sırasında `assets/cities.csv.gz` dosyası
+  `assets/cities.csv` olarak açılıyordu; uygulama eski adı aradığı için
+  `FileNotFoundException` ile kapanıyordu. Yükleyici artık iki adı da dener,
+  gzip olup olmadığını dosya adına güvenmeden algılar ve gömülü şehir listesi
+  okunamazsa yerleşik kısa listeye düşer.
+- Şehir kataloğu artık ana thread'de değil `Dispatchers.IO` üzerinde yükleniyor;
+  bozuk ayar dosyası da açılışı engellemiyor.
+
+### Değişenler
+- `INTERNET` ve `ACCESS_NETWORK_STATE` izinleri kaldırıldı; uygulama tamamen
+  çevrimdışı ve hiçbir ağ bağlantısı kurmuyor. Bununla birlikte hiçbir şey
+  yapmayan "Diyanet ile çevrim içi karşılaştırma" anahtarı da kaldırıldı.
+- Sürüm imzasına v1 (JAR) imzası eklendi (v2 + v3 ile birlikte), böylece tüm
+  kurulum ve doğrulama araçları imzayı geçerli sayar.
+
+### Altyapı
+- GitHub Actions'ta gerçek emülatörde release APK açılış testi eklendi
+  (`.github/workflows/smoke.yml`); çökme bu testle yakalandı.
+
 ## [1.0.0] — 2026-11-19
 
 İlk sürüm.

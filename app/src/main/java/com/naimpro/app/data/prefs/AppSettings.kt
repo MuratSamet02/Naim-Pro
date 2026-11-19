@@ -47,7 +47,6 @@ data class AppSettings(
     val dynamicColor: Boolean = true,
     val language: AppLanguage = AppLanguage.TURKISH,
     val fontScale: Float = 1.0f,
-    val onlineComparisonEnabled: Boolean = false,
     val onboardingCompleted: Boolean = false,
     val lastZikir: String = "Sübhanallah",
     val lastZikirTarget: Int = 33,

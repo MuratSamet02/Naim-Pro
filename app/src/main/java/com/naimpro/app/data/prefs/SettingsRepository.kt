@@ -41,7 +41,6 @@ class SettingsRepository(private val context: Context) {
         val dynamicColor = booleanPreferencesKey("dynamic_color")
         val language = stringPreferencesKey("language")
         val fontScale = floatPreferencesKey("font_scale")
-        val onlineComparison = booleanPreferencesKey("online_comparison")
         val onboarding = booleanPreferencesKey("onboarding")
         val lastZikir = stringPreferencesKey("last_zikir")
         val lastZikirTarget = intPreferencesKey("last_zikir_target")
@@ -83,7 +82,6 @@ class SettingsRepository(private val context: Context) {
             dynamicColor = orDefault(Keys.dynamicColor, d.dynamicColor),
             language = enumOrDefault(this[Keys.language], AppLanguage.entries, d.language) { it.tag },
             fontScale = orDefault(Keys.fontScale, d.fontScale),
-            onlineComparisonEnabled = orDefault(Keys.onlineComparison, d.onlineComparisonEnabled),
             onboardingCompleted = orDefault(Keys.onboarding, d.onboardingCompleted),
             lastZikir = orDefault(Keys.lastZikir, d.lastZikir),
             lastZikirTarget = orDefault(Keys.lastZikirTarget, d.lastZikirTarget),
@@ -122,7 +120,6 @@ class SettingsRepository(private val context: Context) {
         this[Keys.dynamicColor] = settings.dynamicColor
         this[Keys.language] = settings.language.tag
         this[Keys.fontScale] = settings.fontScale
-        this[Keys.onlineComparison] = settings.onlineComparisonEnabled
         this[Keys.onboarding] = settings.onboardingCompleted
         this[Keys.lastZikir] = settings.lastZikir
         this[Keys.lastZikirTarget] = settings.lastZikirTarget

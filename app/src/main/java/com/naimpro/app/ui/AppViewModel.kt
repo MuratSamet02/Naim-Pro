@@ -14,6 +14,7 @@ import com.naimpro.app.domain.model.Location
 import com.naimpro.app.domain.model.Prayer
 import com.naimpro.app.domain.model.PrayerTimes
 import com.naimpro.app.ui.util.LocationProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -76,10 +77,15 @@ class AppViewModel(private val container: AppContainer) : ViewModel() {
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
 
     init {
-        viewModelScope.launch {
-            val stored = container.locations.current()
-            val resolved = stored ?: container.cities.defaultLocation().also { container.locations.save(it) }
-            _location.value = resolved
+        // Startup must survive a broken settings file or an unreadable asset, and
+        // parsing the bundled catalogue must not run on the main thread.
+        viewModelScope.launch(Dispatchers.IO) {
+            val resolved =
+                runCatching {
+                    container.locations.current()
+                        ?: container.cities.defaultLocation().also { container.locations.save(it) }
+                }.getOrNull() ?: runCatching { container.cities.defaultLocation() }.getOrNull()
+            if (resolved != null) _location.value = resolved
         }
     }
 

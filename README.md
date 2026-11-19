@@ -62,7 +62,7 @@ uygulamasıdır. Ticari "Pro" sürümlerde ücretli olan özelliklerin tamamı b
 - Reklam SDK'sı yok, analitik yok, çökme raporlama yok
 - Google Play Services bağımlılığı yok (F-Droid uyumlu)
 - Konum yalnızca **yaklaşık** (coarse) ve yalnızca izin verirsen alınır; cihazdan çıkmaz
-- İnternet izni isteğe bağlıdır; uygulama internet olmadan %100 çalışır
+- **İnternet izni hiç istenmez**; uygulama ağ erişimi olmadan tam olarak çalışır
 
 Ayrıntılar: [PRIVACY.md](PRIVACY.md)
 
@@ -70,7 +70,29 @@ Ayrıntılar: [PRIVACY.md](PRIVACY.md)
 
 ### Hazır APK
 
-[Releases](https://github.com/MuratSamet02/naim-pro/releases) sayfasından ABI'ye uygun APK'yı indir.
+[Releases](https://github.com/MuratSamet02/naim-pro/releases) sayfasından ABI'ye uygun APK'yı indir:
+
+| Cihaz | Dosya |
+|---|---|
+| Neredeyse tüm modern telefonlar | `app-arm64-v8a-release.apk` |
+| Eski 32-bit ARM cihazlar | `app-armeabi-v7a-release.apk` |
+| x86_64 emülatörler | `app-x86_64-release.apk` |
+
+#### Play Protect uyarısı hakkında
+
+Uygulama Google Play dışında dağıtıldığı için Android, kurulum sırasında
+"Play Protect bu uygulamanın geliştiricisini tanımıyor" veya "bilinmeyen
+kaynak" uyarısı gösterebilir. Bu, uygulamanın zararlı olduğu anlamına gelmez:
+
+- APK, projeye ait **sabit bir sürüm anahtarıyla** imzalanır (v1 + v2 + v3);
+  debug anahtarı kullanılmaz.
+- Sürümün imzası `apksigner verify --print-certs` ile doğrulanabilir.
+- İsterseniz APK'yı kendiniz derleyip karşılaştırabilirsiniz (aşağıdaki bölüm).
+
+Kuruluma devam etmek için uyarı ekranında **"Yine de yükle"** seçeneğini
+kullanın. Uyarıyı tamamen kaldırmanın tek yolu uygulamayı Google Play'e
+yüklemektir; Play Protect, Play dışından yüklenen her uygulama için bu bilgi
+ekranını gösterebilir.
 
 ### Kaynaktan derleme
 

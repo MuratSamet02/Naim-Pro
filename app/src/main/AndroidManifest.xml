@@ -22,9 +22,12 @@
 
     <!-- Optional: approximate location only, never precise. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- Optional: user initiated online comparison with Diyanet. -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+      No network permissions are declared on purpose: the app is fully offline
+      and ships no HTTP client. This keeps the permission list limited to what
+      the prayer time features actually need.
+    -->
 
     <uses-feature
         android:name="android.hardware.location"

@@ -128,8 +128,6 @@
     <string name="settings_dynamic_color">Dinamik renk (Material You)</string>
     <string name="settings_language">Dil</string>
     <string name="settings_font_scale">Yazı boyutu</string>
-    <string name="settings_online_compare">Diyanet ile çevrim içi karşılaştırma</string>
-    <string name="settings_online_compare_desc">Varsayılan olarak kapalıdır. Açıldığında yalnızca seçtiğiniz ilçenin vakitleri indirilir.</string>
     <string name="settings_backup">Yedekleme</string>
     <string name="settings_backup_export">Yedeği dışa aktar</string>
     <string name="settings_backup_import">Yedekten geri yükle</string>

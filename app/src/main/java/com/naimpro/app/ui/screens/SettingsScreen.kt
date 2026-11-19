@@ -351,14 +351,6 @@ fun SettingsScreen(
                         },
                         valueRange = 0.85f..1.5f,
                     )
-                    SwitchRow(
-                        title = stringResource(R.string.settings_online_compare),
-                        subtitle = stringResource(R.string.settings_online_compare_desc),
-                        checked = settings.onlineComparisonEnabled,
-                        onCheckedChange = { enabled ->
-                            vm.updateSettings { it.copy(onlineComparisonEnabled = enabled) }
-                        },
-                    )
                 }
             }
 
