@@ -36,7 +36,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Android SDK kur
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: SDK bileşenlerini kur
         run: |
@@ -86,7 +86,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Android SDK kur
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: SDK bileşenlerini kur
         run: |
