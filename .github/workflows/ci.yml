@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Depoyu al
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: JDK 17 kur
         uses: actions/setup-java@v4
@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: Depoyu al
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: JDK 17 kur
         uses: actions/setup-java@v4
