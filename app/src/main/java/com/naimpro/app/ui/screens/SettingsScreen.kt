@@ -70,6 +70,9 @@ import com.naimpro.app.ui.AppViewModel
 import com.naimpro.app.ui.components.SectionTitle
 import com.naimpro.app.ui.components.SwitchRow
 import com.naimpro.app.ui.components.VerticalGap
+import com.naimpro.app.ui.components.highLatLabel
+import com.naimpro.app.ui.components.madhabLabel
+import com.naimpro.app.ui.components.methodLabel
 import com.naimpro.app.ui.components.prayerLabel
 import com.naimpro.app.ui.util.applyLanguage
 import kotlinx.coroutines.launch
@@ -740,36 +743,6 @@ private fun <T> ChoiceDialog(
         },
     )
 }
-
-@Composable
-private fun methodLabel(method: CalculationMethod): Int =
-    when (method) {
-        CalculationMethod.DIYANET -> R.string.method_diyanet
-        CalculationMethod.DIYANET_SAFI -> R.string.method_diyanet_safi
-        CalculationMethod.MWL -> R.string.method_mwl
-        CalculationMethod.ISNA -> R.string.method_isna
-        CalculationMethod.UMM_AL_QURA -> R.string.method_umm_al_qura
-        CalculationMethod.EGYPT -> R.string.method_egypt
-        CalculationMethod.KARACHI -> R.string.method_karachi
-        CalculationMethod.KUWAIT -> R.string.method_kuwait
-        CalculationMethod.SINGAPORE -> R.string.method_singapore
-    }
-
-@Composable
-private fun madhabLabel(madhab: AsrMadhab): Int =
-    when (madhab) {
-        AsrMadhab.STANDARD -> R.string.madhab_standard
-        AsrMadhab.HANAFI -> R.string.madhab_hanafi
-    }
-
-@Composable
-private fun highLatLabel(rule: HighLatitudeRule): Int =
-    when (rule) {
-        HighLatitudeRule.NONE -> R.string.high_lat_none
-        HighLatitudeRule.MIDDLE_OF_THE_NIGHT -> R.string.high_lat_middle
-        HighLatitudeRule.ONE_SEVENTH -> R.string.high_lat_seventh
-        HighLatitudeRule.TWILIGHT_ANGLE -> R.string.high_lat_angle
-    }
 
 @Composable
 private fun themeLabel(mode: ThemeMode): Int =

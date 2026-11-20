@@ -257,4 +257,24 @@
     <string name="qibla_calibration">معايرة القبلة</string>
     <string name="qibla_calibration_desc">ضبط دقيق لانحراف البوصلة: %1$s°</string>
     <string name="qibla_declination">الانحراف المغناطيسي: %1$s°</string>
+    <string name="home_today">اليوم</string>
+    <string name="home_yesterday">أمس</string>
+    <string name="home_tomorrow">غدًا</string>
+    <string name="home_previous_day">اليوم السابق</string>
+    <string name="home_next_day">اليوم التالي</string>
+    <string name="home_day_over">انقضت جميع أوقات الصلاة لهذا اليوم</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في Naim Pro</string>
+    <string name="onboarding_welcome_body">أوقات صلاة بدون إعلانات وبدون تتبع، وتعمل دون اتصال بالكامل. موقعك لا يغادر جهازك أبدًا.</string>
+    <string name="onboarding_location_title">اختر موقعك</string>
+    <string name="onboarding_location_body">تُحسب أوقات الصلاة لهذا الموقع. يُخزَّن على جهازك فقط ولا يُرسَل إلى أي خادم.</string>
+    <string name="onboarding_location_popular">مدن شائعة</string>
+    <string name="onboarding_selected">محدد</string>
+    <string name="onboarding_notifications_title">إشعارات الصلاة</string>
+    <string name="onboarding_notifications_body">سننبهك عند دخول وقت الصلاة. يمكنك تفعيل ذلك لاحقًا من الإعدادات.</string>
+    <string name="onboarding_notifications_note">تُنشأ الإشعارات على جهازك بالكامل. لا خادم ولا إعلانات ولا تحليلات.</string>
+    <string name="onboarding_method_title">طريقة الحساب</string>
+    <string name="onboarding_method_body">الطريقة الافتراضية هي ديانت. يمكنك تغييرها لاحقًا من الإعدادات.</string>
+    <string name="onboarding_next">متابعة</string>
+    <string name="onboarding_skip">تخطٍ الآن</string>
+    <string name="onboarding_finish">ابدأ</string>
 </resources>

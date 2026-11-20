@@ -273,4 +273,24 @@
     <string name="qibla_calibration">Kıble kalibrasyonu</string>
     <string name="qibla_calibration_desc">Pusula sapması için ince ayar: %1$s°</string>
     <string name="qibla_declination">Manyetik sapma: %1$s°</string>
+    <string name="home_today">Bugün</string>
+    <string name="home_yesterday">Dün</string>
+    <string name="home_tomorrow">Yarın</string>
+    <string name="home_previous_day">Önceki gün</string>
+    <string name="home_next_day">Sonraki gün</string>
+    <string name="home_day_over">Bu günün vakitleri tamamlandı</string>
+    <string name="onboarding_welcome_title">Naim Pro\'ya hoş geldiniz</string>
+    <string name="onboarding_welcome_body">Reklamsız, izleyicisiz ve tamamen çevrimdışı namaz vakti. Konumunuz cihazınızdan hiç ayrılmaz.</string>
+    <string name="onboarding_location_title">Konumunuzu seçin</string>
+    <string name="onboarding_location_body">Vakitler bu konuma göre hesaplanır. Konum yalnızca cihazınızda saklanır, hiçbir sunucuya gönderilmez.</string>
+    <string name="onboarding_location_popular">Sık kullanılan şehirler</string>
+    <string name="onboarding_selected">Seçili</string>
+    <string name="onboarding_notifications_title">Vakit bildirimleri</string>
+    <string name="onboarding_notifications_body">Ezan vakti geldiğinde haber verelim. Bildirimleri daha sonra Ayarlar bölümünden de açabilirsiniz.</string>
+    <string name="onboarding_notifications_note">Bildirimler tamamen cihazınızda oluşturulur. Sunucu, reklam veya analitik yoktur.</string>
+    <string name="onboarding_method_title">Hesaplama yöntemi</string>
+    <string name="onboarding_method_body">Diyanet varsayılandır. Yöntemi daha sonra Ayarlar bölümünden değiştirebilirsiniz.</string>
+    <string name="onboarding_next">Devam</string>
+    <string name="onboarding_skip">Şimdilik geç</string>
+    <string name="onboarding_finish">Başla</string>
 </resources>

@@ -257,4 +257,24 @@
     <string name="qibla_calibration">Qibla calibration</string>
     <string name="qibla_calibration_desc">Fine tune the compass offset: %1$s°</string>
     <string name="qibla_declination">Magnetic declination: %1$s°</string>
+    <string name="home_today">Today</string>
+    <string name="home_yesterday">Yesterday</string>
+    <string name="home_tomorrow">Tomorrow</string>
+    <string name="home_previous_day">Previous day</string>
+    <string name="home_next_day">Next day</string>
+    <string name="home_day_over">All prayer times for this day have passed</string>
+    <string name="onboarding_welcome_title">Welcome to Naim Pro</string>
+    <string name="onboarding_welcome_body">Ad free, tracker free and fully offline prayer times. Your location never leaves your device.</string>
+    <string name="onboarding_location_title">Choose your location</string>
+    <string name="onboarding_location_body">Prayer times are calculated for this location. It is stored only on your device and never uploaded.</string>
+    <string name="onboarding_location_popular">Popular cities</string>
+    <string name="onboarding_selected">Selected</string>
+    <string name="onboarding_notifications_title">Prayer notifications</string>
+    <string name="onboarding_notifications_body">Let us notify you when a prayer time arrives. You can also enable this later in Settings.</string>
+    <string name="onboarding_notifications_note">Notifications are created entirely on your device. No server, no ads and no analytics.</string>
+    <string name="onboarding_method_title">Calculation method</string>
+    <string name="onboarding_method_body">Diyanet is the default. You can change the method later in Settings.</string>
+    <string name="onboarding_next">Continue</string>
+    <string name="onboarding_skip">Skip for now</string>
+    <string name="onboarding_finish">Start</string>
 </resources>

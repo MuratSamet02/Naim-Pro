@@ -57,3 +57,15 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
           script: bash .github/scripts/emulator-smoke.sh
+
+      # Onboarding, alarm ve widget davranışı yalnızca gerçek bir emülatörde
+      # doğrulanabildiği için instrumentation testleri burada çalışır.
+      - name: Instrumentation testleri
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          script: ./gradlew connectedDebugAndroidTest --console=plain

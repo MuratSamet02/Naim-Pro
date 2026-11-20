@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
@@ -32,6 +34,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,14 +56,13 @@ import com.naimpro.app.domain.model.PrayerTimes
 import com.naimpro.app.ui.AppViewModel
 import com.naimpro.app.ui.components.VerticalGap
 import com.naimpro.app.ui.components.prayerLabel
-import com.naimpro.app.ui.theme.BrandDeep
-import com.naimpro.app.ui.theme.BrandGold
-import com.naimpro.app.ui.theme.BrandGoldLight
-import com.naimpro.app.ui.theme.BrandTeal
-import com.naimpro.app.ui.theme.BrandTealLight
+import com.naimpro.app.ui.design.DayPhase
+import com.naimpro.app.ui.design.SkyColors
+import com.naimpro.app.ui.design.SkyPalette
 import com.naimpro.app.ui.util.clock
 import com.naimpro.app.ui.util.formatCountdown
 import com.naimpro.app.ui.util.rememberNow
+import com.naimpro.app.ui.util.toLocale
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -83,11 +86,27 @@ fun HomeScreen(
     val now = rememberNow(zone)
     val times = state.times
     val language = settings.language.tag
+    val dark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val sky = SkyPalette.forPhase(DayPhase.from(now.toLocalTime()), dark)
+    val dateLabel =
+        when (state.dayOffset) {
+            0 -> stringResource(R.string.home_today)
+            -1 -> stringResource(R.string.home_yesterday)
+            1 -> stringResource(R.string.home_tomorrow)
+            else ->
+                state.date?.format(
+                    java.time.format.DateTimeFormatter.ofPattern("d MMM", language.toLocale()),
+                ).orEmpty()
+        }
 
     val next: Pair<Prayer, LocalDateTime>? =
-        remember(times, state.tomorrow, now) {
-            times?.asList()?.firstOrNull { it.second.isAfter(now) }
-                ?: state.tomorrow?.asList()?.firstOrNull()
+        remember(times, state.tomorrow, now, state.isToday) {
+            if (!state.isToday) {
+                null
+            } else {
+                times?.asList()?.firstOrNull { it.second.isAfter(now) }
+                    ?: state.tomorrow?.asList()?.firstOrNull()
+            }
         }
 
     val hijriLabel =
@@ -159,11 +178,46 @@ fun HomeScreen(
         }
 
         item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = { vm.shiftDay(-1) }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.home_previous_day),
+                    )
+                }
+                Text(
+                    text = dateLabel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
+                if (!state.isToday) {
+                    TextButton(onClick = { vm.showToday() }) {
+                        Text(stringResource(R.string.home_today))
+                    }
+                }
+                IconButton(onClick = { vm.shiftDay(1) }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = stringResource(R.string.home_next_day),
+                    )
+                }
+            }
+        }
+
+        item {
             NextPrayerCard(
                 next = next,
                 now = now,
                 times = times,
                 language = language,
+                sky = sky,
+                isToday = state.isToday,
+                dateLabel = dateLabel,
                 remainingLabel = stringResource(R.string.home_remaining),
                 nextLabel = stringResource(R.string.home_next_prayer),
             )
@@ -274,6 +328,9 @@ private fun NextPrayerCard(
     now: LocalDateTime,
     times: PrayerTimes?,
     language: String,
+    sky: SkyColors,
+    isToday: Boolean,
+    dateLabel: String,
     remainingLabel: String,
     nextLabel: String,
 ) {
@@ -297,13 +354,13 @@ private fun NextPrayerCard(
             Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(28.dp))
-                .background(Brush.linearGradient(listOf(BrandDeep, BrandTeal))),
+                .background(Brush.linearGradient(listOf(Color(sky.top), Color(sky.bottom)))),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = nextLabel,
                 style = MaterialTheme.typography.labelLarge,
-                color = BrandTealLight,
+                color = Color(sky.onSkyMuted),
             )
             Spacer(modifier = Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.Bottom) {
@@ -311,36 +368,36 @@ private fun NextPrayerCard(
                     text = next?.first?.let { prayerLabel(it) } ?: "—",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = Color(sky.onSky),
                     modifier = Modifier.weight(1f),
                 )
                 Text(
                     text = next?.second?.clock() ?: "--:--",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = BrandGoldLight,
+                    color = Color(sky.accent),
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text =
-                    if (next != null) {
-                        "${formatCountdown(next.second, now, language)} $remainingLabel"
-                    } else {
-                        ""
+                    when {
+                        !isToday -> dateLabel
+                        next != null -> "${formatCountdown(next.second, now, language)} $remainingLabel"
+                        else -> stringResource(R.string.home_day_over)
                     },
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White.copy(alpha = 0.85f),
+                color = Color(sky.onSkyMuted),
             )
             Spacer(modifier = Modifier.height(14.dp))
             LinearProgressIndicator(
-                progress = { fraction },
+                progress = { if (isToday) fraction else 0f },
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .height(6.dp)
                         .clip(CircleShape),
-                color = BrandGold,
+                color = Color(sky.accent),
                 trackColor = Color.White.copy(alpha = 0.18f),
             )
         }

@@ -19,6 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -39,6 +42,7 @@ import com.naimpro.app.ui.screens.HomeScreen
 import com.naimpro.app.ui.screens.LocationPickerScreen
 import com.naimpro.app.ui.screens.MonthlyScreen
 import com.naimpro.app.ui.screens.MoreScreen
+import com.naimpro.app.ui.screens.OnboardingScreen
 import com.naimpro.app.ui.screens.QiblaScreen
 import com.naimpro.app.ui.screens.SettingsScreen
 import com.naimpro.app.ui.screens.TrackingScreen
@@ -71,18 +75,31 @@ class MainActivity : ComponentActivity() {
         }
 
         val container = NaimApplication.container(this)
-        splash.setKeepOnScreenCondition { false }
+        // Keep the splash visible until the stored settings are read, otherwise
+        // an existing user would see the onboarding for a single frame.
+        val ready = mutableStateOf(false)
+        splash.setKeepOnScreenCondition { !ready.value }
 
         setContent {
             val vm: AppViewModel = viewModel(factory = AppViewModel.Factory(container))
-            val settings by vm.settings.collectAsStateWithLifecycle()
+            val settings by vm.loadedSettings.collectAsStateWithLifecycle()
+            val current = settings ?: return@setContent
 
-            LaunchedEffect(settings.language) {
-                applyLanguage(this@MainActivity, settings.language.tag)
+            LaunchedEffect(Unit) { ready.value = true }
+
+            LaunchedEffect(current.language) {
+                applyLanguage(this@MainActivity, current.language.tag)
             }
 
-            NaimTheme(settings = settings) {
-                NaimApp(vm)
+            NaimTheme(settings = current) {
+                var onboardingDone by remember(current.onboardingCompleted) {
+                    mutableStateOf(current.onboardingCompleted)
+                }
+                if (onboardingDone) {
+                    NaimApp(vm)
+                } else {
+                    OnboardingScreen(vm = vm, onDone = { onboardingDone = true })
+                }
             }
         }
     }
@@ -148,11 +165,11 @@ private fun NaimApp(vm: AppViewModel) {
                     vm = vm,
                     onPickLocation = { navController.navigate("location") },
                     onOpenSettings = { navController.navigate("settings") },
-                    onOpenQibla = { navController.navigate("qibla-screen") },
-                    onOpenMonthly = { navController.navigate("monthly-screen") },
+                    onOpenQibla = { navigate(Destination.QIBLA.route) },
+                    onOpenMonthly = { navigate(Destination.MONTHLY.route) },
                     onOpenTracking = { navController.navigate("tracking") },
                     onOpenZikir = { navController.navigate("zikir") },
-                    onOpenContent = { navController.navigate("content/0") },
+                    onOpenContent = { navController.navigate("content/1") },
                 )
             }
             composable(Destination.QIBLA.route) {
@@ -166,18 +183,12 @@ private fun NaimApp(vm: AppViewModel) {
                     vm = vm,
                     onOpenTracking = { navController.navigate("tracking") },
                     onOpenZikir = { navController.navigate("zikir") },
-                    onOpenContent = { navController.navigate("content/0") },
+                    onOpenContent = { navController.navigate("content/1") },
                     onOpenEsma = { navController.navigate("content/0") },
                     onOpenCalendar = { navController.navigate("calendar") },
                     onOpenSettings = { navController.navigate("settings") },
                     onOpenAbout = { navController.navigate("about") },
                 )
-            }
-            composable("qibla-screen") {
-                QiblaScreen(vm = vm, onBack = { navController.popBackStack() })
-            }
-            composable("monthly-screen") {
-                MonthlyScreen(vm = vm, onBack = { navController.popBackStack() })
             }
             composable("location") {
                 LocationPickerScreen(

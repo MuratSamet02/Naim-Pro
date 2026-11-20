@@ -38,8 +38,8 @@ android {
         applicationId = "com.naimpro.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2000001
-        versionName = "2.0.0-beta.1"
+        versionCode = 2000002
+        versionName = "2.0.0-beta.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

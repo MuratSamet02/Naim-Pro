@@ -293,3 +293,33 @@ Alt ajanlar aynı çalışma dizininde çalışır; çakışmayı önlemek için
 - Kaldı (F1 dışı): gerçek cihazda FGS/cami modu doğrulaması CI emülatöründe
   `smoke.yml` ile yapılacak.
 - Sıradaki: **F2** — tasarım dili, onboarding, navigasyon.
+
+### Gün 1 — F2 tamamlandı (20.11.2026)
+
+- Faz: **F2 ✅** — Paket B (tasarım dili), A1 onboarding, A4.1–A4.3.
+- Bitti:
+  - `ui/design`: `NaimSpacing`/`NaimRadius` token'ları ve faz bazlı
+    `SkyPalette` (5 faz × açık/koyu). Kontrast saf Kotlin'de hesaplanıp
+    WCAG AA (≥ 4,5 metin, ≥ 3,0 vurgu) olarak **test ediliyor**.
+  - Ana ekran: gün gezinme (−30…+30), "Bugün/Dün/Yarın" etiketi, `SkyPalette`
+    gradyanlı sonraki vakit kartı, gün bittiğinde doğru metin.
+  - Onboarding: hoş geldiniz → konum (arama + popüler şehirler + GPS) →
+    bildirim izni → hesaplama yöntemi. `OnboardingStep`/`canContinue` saf
+    Kotlin ve testli; `onboardingCompleted` artık gerçekten kapı görevi
+    görüyor. **S1 kapandı** (Ankara'ya sessiz düşüş kaldırıldı: `AppViewModel`
+    artık konum yazmıyor, seçim kullanıcıya ait).
+  - Navigasyon: `qibla-screen`/`monthly-screen` çift rotaları **kaldırıldı**,
+    alt bar sekmeleri `saveState/restoreState` ile kullanılıyor,
+    `onOpenEsma` → `content/0`, `onOpenContent` → `content/1`. **S7 kapandı**.
+  - Splash, ayarlar okunana kadar açık kalıyor (onboarding bir kare bile
+    yanlış görünmüyor).
+  - `androidTest` altyapısı kuruldu (`FirstLaunchTest`), CI'da
+    `connectedDebugAndroidTest` çalışıyor. **S13'ün test kısmı başladı**.
+  - `methodLabel`/`madhabLabel`/`highLatLabel` tek yere taşındı
+    (`ui/components/Labels.kt`).
+- Ölçüm: **109 test / 0 hata** (87 → 109); ktlint, detekt, lintDebug,
+  assembleDebug, assembleDebugAndroidTest yeşil.
+- Karar: font eklenmedi; mevcut sistem tipografisi + token'lar korunuyor.
+  Özel font F7'de boyut bütçesi netleşince değerlendirilecek.
+- Sıradaki: **F3** — 81 il/ilçe kapsamı, ek vakitler, Kur'an/rehber/tesbihat/
+  kaza.
