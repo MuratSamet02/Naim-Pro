@@ -1,7 +1,7 @@
 package com.naimpro.app.widget
 
 import android.content.Context
-import android.graphics.Color
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,10 +31,10 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.naimpro.app.MainActivity
 
-private val Background = ColorProvider(Color.parseColor("#0B2A2E"))
-private val Accent = ColorProvider(Color.parseColor("#C9A227"))
-private val OnSurface = ColorProvider(Color.parseColor("#F2F6F5"))
-private val Muted = ColorProvider(Color.parseColor("#8FA9A5"))
+private val Background = ColorProvider(Color(0xFF0B2A2E))
+private val Accent = ColorProvider(Color(0xFFC9A227))
+private val OnSurface = ColorProvider(Color(0xFFF2F6F5))
+private val Muted = ColorProvider(Color(0xFF8FA9A5))
 
 /** 2x2 widget: next prayer and the remaining time. */
 class SmallPrayerWidget : GlanceAppWidget() {

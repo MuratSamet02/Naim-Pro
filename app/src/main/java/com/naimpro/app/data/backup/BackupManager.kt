@@ -5,6 +5,7 @@ import android.net.Uri
 import com.naimpro.app.data.local.NaimDatabase
 import com.naimpro.app.data.prefs.AppLanguage
 import com.naimpro.app.data.prefs.AppSettings
+import com.naimpro.app.data.prefs.CamiModeFilter
 import com.naimpro.app.data.prefs.NotificationMode
 import com.naimpro.app.data.prefs.SettingsRepository
 import com.naimpro.app.data.prefs.ThemeMode
@@ -39,11 +40,16 @@ data class BackupSettings(
     val notificationModes: Map<String, String> = emptyMap(),
     val preReminderEnabled: Boolean = false,
     val preReminderMinutes: Int = 0,
+    val perPrayerReminderMinutes: Map<String, Int> = emptyMap(),
     val ezanVolumePercent: Int = 80,
     val vibrationEnabled: Boolean = true,
+    val ongoingNotificationEnabled: Boolean = false,
     val salahTrackingEnabled: Boolean = true,
     val diniGunNotifications: Boolean = false,
     val camiModeEnabled: Boolean = false,
+    val camiModeMinutes: Int = 15,
+    val camiModeFilter: String = "ALARMS",
+    val qiblaCalibrationOffset: Float = 0f,
     val themeMode: String = "SYSTEM",
     val dynamicColor: Boolean = true,
     val language: String = "tr",
@@ -140,11 +146,16 @@ class BackupManager(
             notificationModes = notificationModes.entries.associate { it.key.name to it.value.name },
             preReminderEnabled = preReminderEnabled,
             preReminderMinutes = preReminderMinutes,
+            perPrayerReminderMinutes = perPrayerReminderMinutes.entries.associate { it.key.name to it.value },
             ezanVolumePercent = ezanVolumePercent,
             vibrationEnabled = vibrationEnabled,
+            ongoingNotificationEnabled = ongoingNotificationEnabled,
             salahTrackingEnabled = salahTrackingEnabled,
             diniGunNotifications = diniGunNotifications,
             camiModeEnabled = camiModeEnabled,
+            camiModeMinutes = camiModeMinutes,
+            camiModeFilter = camiModeFilter.name,
+            qiblaCalibrationOffset = qiblaCalibrationOffset,
             themeMode = themeMode.name,
             dynamicColor = dynamicColor,
             language = language.tag,
@@ -170,11 +181,19 @@ class BackupManager(
                 }.toMap().ifEmpty { current.notificationModes },
             preReminderEnabled = preReminderEnabled,
             preReminderMinutes = preReminderMinutes,
+            perPrayerReminderMinutes =
+                perPrayerReminderMinutes.mapNotNull { (key, value) ->
+                    Prayer.entries.firstOrNull { it.name == key }?.let { it to value }
+                }.toMap(),
             ezanVolumePercent = ezanVolumePercent,
             vibrationEnabled = vibrationEnabled,
+            ongoingNotificationEnabled = ongoingNotificationEnabled,
             salahTrackingEnabled = salahTrackingEnabled,
             diniGunNotifications = diniGunNotifications,
             camiModeEnabled = camiModeEnabled,
+            camiModeMinutes = camiModeMinutes.coerceIn(5, 60),
+            camiModeFilter = CamiModeFilter.fromKey(camiModeFilter),
+            qiblaCalibrationOffset = qiblaCalibrationOffset.coerceIn(-10f, 10f),
             themeMode = ThemeMode.entries.firstOrNull { it.name == themeMode } ?: current.themeMode,
             dynamicColor = dynamicColor,
             language = AppLanguage.entries.firstOrNull { it.tag == language } ?: current.language,

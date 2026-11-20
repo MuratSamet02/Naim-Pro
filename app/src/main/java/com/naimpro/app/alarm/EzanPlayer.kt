@@ -2,27 +2,42 @@ package com.naimpro.app.alarm
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.util.Log
 import com.naimpro.app.R
 import com.naimpro.app.data.prefs.NotificationMode
 import java.io.IOException
 
 /**
- * Plays the adhan (or the built-in chime, or a short vibration) when a prayer
- * time alarm fires.
+ * Low level playback for the adhan, the built in chime and settings previews.
  *
- * A wake lock is held only while audio is playing and released immediately
- * afterwards, which keeps the battery impact to a few seconds per prayer.
+ * The player itself is deliberately serviceless: [EzanPlaybackService] keeps the
+ * process alive while a long adhan is playing and calls [stop] when done. A wake
+ * lock and audio focus are held only for the duration of the sound, so the
+ * battery cost is a few seconds per prayer and never a permanent background
+ * service.
  */
 object EzanPlayer {
+    private const val TAG = "EzanPlayer"
+    private const val MAX_WAKE_LOCK_MS = 6 * 60 * 1000L
+    private const val PREVIEW_MAX_MS = 15_000L
+
     private var player: MediaPlayer? = null
     private var wakeLock: PowerManager.WakeLock? = null
+    private var focusRequest: AudioFocusRequest? = null
+    private var audioManager: AudioManager? = null
+    private var onFinished: (() -> Unit)? = null
+    private val handler = Handler(Looper.getMainLooper())
 
     fun play(
         context: Context,
@@ -30,11 +45,16 @@ object EzanPlayer {
         volumePercent: Int,
         customUri: String?,
         vibrationEnabled: Boolean,
+        onFinished: (() -> Unit)? = null,
     ) {
         release()
+        this.onFinished = onFinished
         when (mode) {
-            NotificationMode.SILENT -> Unit
-            NotificationMode.VIBRATE -> vibrate(context)
+            NotificationMode.SILENT -> notifyFinished()
+            NotificationMode.VIBRATE -> {
+                vibrate(context)
+                notifyFinished()
+            }
             NotificationMode.SHORT_ALERT -> {
                 startPlayer(context, null, volumePercent, short = true)
                 if (vibrationEnabled) vibrate(context)
@@ -44,6 +64,18 @@ object EzanPlayer {
                 if (vibrationEnabled) vibrate(context)
             }
         }
+    }
+
+    /** Plays a short excerpt from the given source so the user can hear it. */
+    fun preview(
+        context: Context,
+        customUri: String?,
+        volumePercent: Int,
+    ) {
+        release()
+        onFinished = null
+        startPlayer(context, customUri, volumePercent, short = false)
+        handler.postDelayed({ stop() }, PREVIEW_MAX_MS)
     }
 
     fun stop() = release()
@@ -56,7 +88,9 @@ object EzanPlayer {
         volumePercent: Int,
         short: Boolean,
     ) {
+        handler.removeCallbacksAndMessages(null)
         acquireWakeLock(context)
+        requestFocus(context)
         val resolved = resolveSource(context, customUri, short)
         val mediaPlayer = MediaPlayer()
         try {
@@ -76,12 +110,18 @@ object EzanPlayer {
             mediaPlayer.setVolume(volumePercent.coerceIn(0, 100) / 100f, volumePercent.coerceIn(0, 100) / 100f)
             mediaPlayer.isLooping = false
             mediaPlayer.setOnCompletionListener { release() }
+            mediaPlayer.setOnErrorListener { _, _, _ ->
+                release()
+                true
+            }
             mediaPlayer.prepare()
             mediaPlayer.start()
             player = mediaPlayer
         } catch (error: IOException) {
+            Log.w(TAG, "Unable to play selected sound", error)
             release()
         } catch (error: IllegalStateException) {
+            Log.w(TAG, "Player state error", error)
             release()
         }
     }
@@ -99,6 +139,30 @@ object EzanPlayer {
             if (parsed != null) return Source(parsed, 0)
         }
         return Source(null, if (short) R.raw.naim_alert else R.raw.naim_chime)
+    }
+
+    private fun requestFocus(context: Context) {
+        val manager = context.getSystemService(AudioManager::class.java) ?: return
+        audioManager = manager
+        val request =
+            AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build(),
+                )
+                .setOnAudioFocusChangeListener { change ->
+                    if (change == AudioManager.AUDIOFOCUS_LOSS ||
+                        change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
+                    ) {
+                        Log.i(TAG, "Audio focus lost; stopping playback")
+                        stop()
+                    }
+                }
+                .build()
+        runCatching { manager.requestAudioFocus(request) }
+        focusRequest = request
     }
 
     private fun vibrate(context: Context) {
@@ -128,6 +192,7 @@ object EzanPlayer {
     }
 
     private fun release() {
+        handler.removeCallbacksAndMessages(null)
         player?.let { mediaPlayer ->
             runCatching { if (mediaPlayer.isPlaying) mediaPlayer.stop() }
             runCatching { mediaPlayer.release() }
@@ -137,8 +202,17 @@ object EzanPlayer {
             runCatching { if (lock.isHeld) lock.release() }
         }
         wakeLock = null
+        focusRequest?.let { request ->
+            runCatching { audioManager?.abandonAudioFocusRequest(request) }
+        }
+        focusRequest = null
+        audioManager = null
+        notifyFinished()
     }
 
-    /** Longest the adhan wake lock may ever be held. */
-    private const val MAX_WAKE_LOCK_MS = 6 * 60 * 1000L
+    private fun notifyFinished() {
+        val callback = onFinished
+        onFinished = null
+        callback?.invoke()
+    }
 }

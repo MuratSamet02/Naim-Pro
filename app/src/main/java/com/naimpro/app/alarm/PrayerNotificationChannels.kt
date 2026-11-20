@@ -18,6 +18,7 @@ object PrayerNotificationChannels {
     const val CHANNEL_REMINDER = "prayer_reminder_v1"
     const val CHANNEL_EVENTS = "religious_days_v1"
     const val CHANNEL_INFO = "app_info_v1"
+    const val CHANNEL_PLAYBACK = "adhan_playback_v1"
 
     fun ensureCreated(context: Context) {
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
@@ -72,6 +73,19 @@ object PrayerNotificationChannels {
                 ).apply {
                     description = context.getString(R.string.channel_info_desc)
                     setSound(null, null)
+                },
+            )
+
+            manager.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_PLAYBACK,
+                    context.getString(R.string.channel_playback_name),
+                    NotificationManager.IMPORTANCE_LOW,
+                ).apply {
+                    description = context.getString(R.string.channel_playback_desc)
+                    setSound(null, null)
+                    enableVibration(false)
+                    setShowBadge(false)
                 },
             )
         }

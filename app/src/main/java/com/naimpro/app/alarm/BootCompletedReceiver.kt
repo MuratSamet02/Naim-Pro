@@ -38,6 +38,8 @@ class BootCompletedReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 container.alarms.reschedule()
+                CamiModeController.reconcile(context)
+                NextPrayerNotification.update(context)
                 WidgetUpdater.refreshAll(context)
                 RescheduleWorker.schedulePeriodic(context)
             } finally {

@@ -260,3 +260,36 @@ Alt ajanlar aynı çalışma dizininde çalışır; çakışmayı önlemek için
 - Kaldı: —
 - Sıradaki: **F1** (kullanıcı "başla" dedi; otonom akış uyarınca F0 bitince F1'e geçilir).
 - Doğrulama komutu: `.\gradlew.bat ktlintCheck detekt testDebugUnitTest assembleDebug`
+
+### Gün 1 — F1 tamamlandı (20.11.2026)
+
+- Faz: **F1 ✅** — A2 (ses/alarm/cami/dini gün) + A3.1 (kıble sapması).
+- Bitti:
+  - Ezan artık kısa ömürlü `mediaPlayback` foreground servisinde
+    (`EzanPlaybackService`); receiver dönse de ses kesilmiyor, bitince servis
+    kendini durduruyor. FGS reddedilirse doğrudan çalmaya düşülüyor.
+  - `AudioFocus` (kayıp/duck), wake lock (6 dk üst sınır), titreşim deseni,
+    "Sesi durdur" eylemi ve `adhan_playback_v1` sessiz kanalı eklendi.
+  - Vakit bazlı ses seçimi (`AlarmPrefs.ezanUriFor`), kalıcı URI izni,
+    önizleme ve "varsayılana dön" Ayarlar'da.
+  - Cami modu: `ALARMS` (varsayılan, ezan duyulur) / `PRIORITY`, 5–60 dk,
+    kilit ekranı sonrası `reconcile` ile geri yükleme; `NONE` kaldırıldı.
+  - Dini gün bildirimi canlandı: bir sonraki olay için 20:00 (önceki akşam)
+    alarmı, `EventLabels` ile TR/EN/AR başlık, `showEvent` çağrısı.
+  - Vakit bazlı ön hatırlatma (`perPrayerReminderMinutes`) ve isteğe bağlı
+    sürekli "sıradaki vakit" bildirimi; açılışta/boot'ta güncelleniyor.
+  - Kıble: `GeomagneticField` ile manyetik sapma düzeltmesi, ±10° ince ayar
+    kaydırıcısı, hizalama titreşimi, sensör dinleyicisi `onDispose` ile
+    bırakılıyor. `MagneticDeclination` saf Kotlin ve testli.
+  - Alarm planlama `AlarmPlanner` olarak saf Kotlin'e ayrıldı (gece yarısı,
+    yaz saati, hatırlatma süresi, geçmiş hatırlatma testleri).
+  - F0'da kırmızı çıkan mevcut lint hataları düzeltildi (widget renkleri,
+    `MonthlyScreen` kaynak sorgusu, `values-v27` tema ayrımı).
+- Ölçüm: **87 test / 0 hata** (73 → 87, +14 yeni); ktlint, detekt, lintDebug,
+  assembleDebug yeşil.
+- Karar: lisansı doğrulanmış ezan kaydı henüz yok; mevcut sentez tonlar
+  korunuyor. Doğrulanmış kaynak bulunana kadar "kendi dosyanı içe aktar"
+  yolu tek yol (uydurma kayıt eklenmez).
+- Kaldı (F1 dışı): gerçek cihazda FGS/cami modu doğrulaması CI emülatöründe
+  `smoke.yml` ile yapılacak.
+- Sıradaki: **F2** — tasarım dili, onboarding, navigasyon.

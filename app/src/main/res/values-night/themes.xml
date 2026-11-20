@@ -9,12 +9,12 @@
         <item name="postSplashScreenTheme">@style/Theme.NaimPro.Main</item>
     </style>
 
-    <style name="Theme.NaimPro.Main" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.NaimPro.Base" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
+
+    <style name="Theme.NaimPro.Main" parent="Theme.NaimPro.Base" />
 </resources>

@@ -1,6 +1,7 @@
 package com.naimpro.app.ui.screens
 
 import android.graphics.Paint
+import android.hardware.GeomagneticField
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +25,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +44,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +62,7 @@ import com.naimpro.app.ui.theme.BrandGoldLight
 import com.naimpro.app.ui.theme.BrandTeal
 import com.naimpro.app.ui.util.formatDecimal
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,14 +72,35 @@ fun QiblaScreen(
     onBack: () -> Unit,
 ) {
     val state by vm.home.collectAsStateWithLifecycle()
+    val settings by vm.settings.collectAsStateWithLifecycle()
     val location = state.location
-    val reading = rememberCompassReading()
+    val declination =
+        remember(location?.latitude, location?.longitude) {
+            location?.let {
+                GeomagneticField(
+                    it.latitude.toFloat(),
+                    it.longitude.toFloat(),
+                    0f,
+                    System.currentTimeMillis(),
+                ).declination
+            } ?: 0f
+        }
+    val reading = rememberCompassReading(declination, settings.qiblaCalibrationOffset)
+    val haptics = LocalHapticFeedback.current
+    val calibration =
+        remember(settings.qiblaCalibrationOffset) {
+            mutableStateOf(settings.qiblaCalibrationOffset)
+        }
 
     val qibla = location?.let { QiblaCalculator.bearingFrom(it.latitude, it.longitude) }
     val distance = location?.let { QiblaCalculator.distanceKm(it.latitude, it.longitude) }
     val azimuth = reading.azimuth
     val aligned = qibla != null && azimuth != null && QiblaCalculator.isAligned(azimuth, qibla)
     val offset = if (qibla != null && azimuth != null) QiblaCalculator.offsetFrom(azimuth, qibla) else null
+
+    LaunchedEffect(aligned) {
+        if (aligned) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
 
     Scaffold(
         topBar = {
@@ -176,6 +206,41 @@ fun QiblaScreen(
                         )
                     }
                 }
+            }
+            if (reading.hasSensor && location != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text =
+                        stringResource(
+                            R.string.qibla_calibration_desc,
+                            formatDecimal(calibration.value.toDouble(), 1),
+                        ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+                Slider(
+                    value = calibration.value,
+                    onValueChange = { calibration.value = it },
+                    onValueChangeFinished = {
+                        vm.updateSettings {
+                            it.copy(
+                                qiblaCalibrationOffset = (calibration.value * 2f).roundToInt() / 2f,
+                            )
+                        }
+                    },
+                    valueRange = -10f..10f,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                )
+                Text(
+                    text =
+                        stringResource(
+                            R.string.qibla_declination,
+                            formatDecimal(declination.toDouble(), 1),
+                        ),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(

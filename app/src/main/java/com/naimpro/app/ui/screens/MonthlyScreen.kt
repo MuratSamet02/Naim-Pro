@@ -73,6 +73,7 @@ fun MonthlyScreen(
     val language = settings.language.tag
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val shareTitle = stringResource(R.string.monthly_share_title)
 
     var month by remember { mutableStateOf(YearMonth.now()) }
     var days by remember { mutableStateOf<List<PrayerTimes>>(emptyList()) }
@@ -158,7 +159,7 @@ fun MonthlyScreen(
                         scope.launch {
                             runCatching {
                                 val file = MonthlyExporter.pdf(context, currentLocation, days, language)
-                                shareFile(context, file, "application/pdf", context.getString(R.string.monthly_share_title))
+                                shareFile(context, file, "application/pdf", shareTitle)
                             }.onFailure {
                                 Toast.makeText(context, R.string.monthly_export_error, Toast.LENGTH_SHORT).show()
                             }
@@ -176,7 +177,7 @@ fun MonthlyScreen(
                         scope.launch {
                             runCatching {
                                 val file = MonthlyExporter.csv(context, currentLocation, days, language)
-                                shareFile(context, file, "text/csv", context.getString(R.string.monthly_share_title))
+                                shareFile(context, file, "text/csv", shareTitle)
                             }.onFailure {
                                 Toast.makeText(context, R.string.monthly_export_error, Toast.LENGTH_SHORT).show()
                             }

@@ -12,9 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.naimpro.app.domain.geo.MagneticDeclination
 
 data class CompassReading(
+    /** Heading relative to true north, already declination corrected. */
     val azimuth: Float? = null,
+    /** Raw heading relative to magnetic north, for diagnostics. */
+    val magneticAzimuth: Float? = null,
     val accuracy: Int = SensorManager.SENSOR_STATUS_UNRELIABLE,
     val hasSensor: Boolean = true,
 )
@@ -22,13 +26,22 @@ data class CompassReading(
 /**
  * Rotation-vector based compass. Uses the fused rotation vector when available
  * and silently falls back to accelerometer + magnetometer.
+ *
+ * A phone reports the heading against magnetic north, while the qibla bearing is
+ * computed against true north. [declinationDegrees] (east positive) and the
+ * user's manual [manualOffsetDegrees] are therefore added before the value is
+ * exposed, which removes the 4–6° error seen in Türkiye.
  */
 @Composable
-fun rememberCompassReading(): CompassReading {
+fun rememberCompassReading(
+    declinationDegrees: Float = 0f,
+    manualOffsetDegrees: Float = 0f,
+): CompassReading {
     val context = LocalContext.current
     var reading by remember { mutableStateOf(CompassReading()) }
+    val correction = declinationDegrees + manualOffsetDegrees
 
-    DisposableEffect(context) {
+    DisposableEffect(context, correction) {
         val manager = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
         if (manager == null) {
             reading = CompassReading(hasSensor = false)
@@ -49,6 +62,18 @@ fun rememberCompassReading(): CompassReading {
         var gravity: FloatArray? = null
         var geomagnetic: FloatArray? = null
 
+        fun publish(
+            magnetic: Float,
+            accuracy: Int,
+        ) {
+            reading =
+                CompassReading(
+                    azimuth = MagneticDeclination.correctedHeading(magnetic, correction),
+                    magneticAzimuth = magnetic,
+                    accuracy = accuracy,
+                )
+        }
+
         val listener =
             object : SensorEventListener {
                 override fun onSensorChanged(event: SensorEvent) {
@@ -56,11 +81,10 @@ fun rememberCompassReading(): CompassReading {
                         Sensor.TYPE_ROTATION_VECTOR -> {
                             SensorManager.getRotationMatrixFromVector(matrix, event.values)
                             SensorManager.getOrientation(matrix, orientation)
-                            reading =
-                                CompassReading(
-                                    azimuth = normalize(Math.toDegrees(orientation[0].toDouble()).toFloat()),
-                                    accuracy = SensorManager.SENSOR_STATUS_ACCURACY_HIGH,
-                                )
+                            publish(
+                                normalize(Math.toDegrees(orientation[0].toDouble()).toFloat()),
+                                SensorManager.SENSOR_STATUS_ACCURACY_HIGH,
+                            )
                         }
                         Sensor.TYPE_ACCELEROMETER -> {
                             gravity = event.values.clone()
@@ -74,11 +98,10 @@ fun rememberCompassReading(): CompassReading {
                     if (rotation == null && g != null && m != null) {
                         if (SensorManager.getRotationMatrix(matrix, null, g, m)) {
                             SensorManager.getOrientation(matrix, orientation)
-                            reading =
-                                CompassReading(
-                                    azimuth = normalize(Math.toDegrees(orientation[0].toDouble()).toFloat()),
-                                    accuracy = SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM,
-                                )
+                            publish(
+                                normalize(Math.toDegrees(orientation[0].toDouble()).toFloat()),
+                                SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM,
+                            )
                         }
                     }
                 }

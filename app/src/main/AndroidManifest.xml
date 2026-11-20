@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Short lived mediaPlayback service while an adhan is playing. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <!-- Optional: silent mode feature (cami modu). -->
     <uses-permission
         android:name="android.permission.ACCESS_NOTIFICATION_POLICY"
@@ -64,6 +67,11 @@
         <receiver
             android:name=".alarm.PrayerAlarmReceiver"
             android:exported="false" />
+
+        <service
+            android:name=".alarm.EzanPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
         <receiver
             android:name=".alarm.BootCompletedReceiver"

@@ -57,7 +57,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naimpro.app.R
 import com.naimpro.app.alarm.AlarmPrefs
 import com.naimpro.app.alarm.CamiModeController
+import com.naimpro.app.alarm.EzanPlayer
 import com.naimpro.app.data.prefs.AppLanguage
+import com.naimpro.app.data.prefs.CamiModeFilter
 import com.naimpro.app.data.prefs.NotificationMode
 import com.naimpro.app.data.prefs.ThemeMode
 import com.naimpro.app.domain.model.Prayer
@@ -130,6 +132,9 @@ fun SettingsScreen(
             }
         }
 
+    var soundTarget by remember { mutableStateOf(Prayer.IMSAK) }
+    var soundVersion by remember { mutableStateOf(0) }
+
     val soundLauncher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.OpenDocument(),
@@ -141,7 +146,8 @@ fun SettingsScreen(
                     Intent.FLAG_GRANT_READ_URI_PERMISSION,
                 )
             }
-            AlarmPrefs(context).customEzanUri = uri.toString()
+            AlarmPrefs(context).setEzanUri(soundTarget, uri.toString())
+            soundVersion++
             Toast.makeText(context, R.string.settings_backup_export_done, Toast.LENGTH_SHORT).show()
         }
 
@@ -302,7 +308,64 @@ fun SettingsScreen(
                     ClickRow(
                         title = stringResource(R.string.settings_custom_sound_clear),
                         value = "",
-                        onClick = { AlarmPrefs(context).customEzanUri = null },
+                        onClick = {
+                            Prayer.ALL.forEach { prayer -> AlarmPrefs(context).setEzanUri(prayer, null) }
+                            AlarmPrefs(context).customEzanUri = null
+                            soundVersion++
+                        },
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_ezan_per_prayer),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_ezan_per_prayer_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Prayer.ALL.forEach { prayer ->
+                        val prefs = remember { AlarmPrefs(context) }
+                        val hasCustom = remember(prefs, prayer, soundVersion) { prefs.hasCustomEzanFor(prayer) }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        ) {
+                            ClickRow(
+                                title = prayerLabel(prayer),
+                                value =
+                                    if (hasCustom) {
+                                        stringResource(R.string.settings_custom_sound_pick)
+                                    } else {
+                                        stringResource(R.string.settings_ezan_default)
+                                    },
+                                onClick = {
+                                    soundTarget = prayer
+                                    soundLauncher.launch(arrayOf("audio/*"))
+                                },
+                                modifier = Modifier.weight(1f),
+                            )
+                            TextButton(
+                                onClick = {
+                                    EzanPlayer.preview(
+                                        context,
+                                        AlarmPrefs(context).ezanUriFor(prayer),
+                                        settings.ezanVolumePercent,
+                                    )
+                                },
+                            ) {
+                                Text(stringResource(R.string.settings_ezan_preview))
+                            }
+                        }
+                    }
+                    SwitchRow(
+                        title = stringResource(R.string.settings_ongoing_notification),
+                        subtitle = stringResource(R.string.settings_ongoing_notification_desc),
+                        checked = settings.ongoingNotificationEnabled,
+                        onCheckedChange = { enabled ->
+                            vm.updateSettings { it.copy(ongoingNotificationEnabled = enabled) }
+                        },
                     )
                     SwitchRow(
                         title = stringResource(R.string.settings_cami_mode),
@@ -315,6 +378,47 @@ fun SettingsScreen(
                             vm.updateSettings { it.copy(camiModeEnabled = enabled) }
                         },
                     )
+                    if (settings.camiModeEnabled) {
+                        Text(
+                            text =
+                                stringResource(
+                                    R.string.settings_cami_mode_minutes,
+                                    settings.camiModeMinutes,
+                                ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                        Slider(
+                            value = settings.camiModeMinutes.toFloat(),
+                            onValueChange = { raw ->
+                                vm.updateSettings {
+                                    it.copy(camiModeMinutes = raw.roundToInt().coerceIn(5, 60))
+                                }
+                            },
+                            valueRange = 5f..60f,
+                            steps = 10,
+                        )
+                        ClickRow(
+                            title = stringResource(R.string.settings_cami_mode_filter),
+                            value =
+                                stringResource(
+                                    if (settings.camiModeFilter == CamiModeFilter.ALARMS) {
+                                        R.string.settings_cami_filter_alarms
+                                    } else {
+                                        R.string.settings_cami_filter_priority
+                                    },
+                                ),
+                            onClick = {
+                                val next =
+                                    if (settings.camiModeFilter == CamiModeFilter.ALARMS) {
+                                        CamiModeFilter.PRIORITY
+                                    } else {
+                                        CamiModeFilter.ALARMS
+                                    }
+                                vm.updateSettings { it.copy(camiModeFilter = next) }
+                            },
+                        )
+                    }
                 }
             }
 
@@ -511,10 +615,11 @@ private fun ClickRow(
     title: String,
     value: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .padding(vertical = 10.dp),

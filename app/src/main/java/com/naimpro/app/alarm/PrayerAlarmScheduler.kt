@@ -9,6 +9,9 @@ import com.naimpro.app.data.prefs.AppSettings
 import com.naimpro.app.data.prefs.SettingsRepository
 import com.naimpro.app.data.repo.LocationRepository
 import com.naimpro.app.data.repo.PrayerRepository
+import com.naimpro.app.domain.alarm.AlarmPlanner
+import com.naimpro.app.domain.hijri.EventReminder
+import com.naimpro.app.domain.hijri.IslamicEvents
 import com.naimpro.app.domain.model.Location
 import com.naimpro.app.domain.model.Prayer
 import com.naimpro.app.domain.model.PrayerTimes
@@ -20,14 +23,16 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
- * Schedules exactly one upcoming prayer alarm (plus an optional reminder).
+ * Keeps the alarm chain alive with at most three pending alarms: the next prayer,
+ * its pre reminder and one religious day reminder.
  *
- * Only a single pending alarm exists at any time, which keeps the alarm table
- * tiny and means Doze has almost nothing to maintain. After a prayer fires the
- * receiver immediately reschedules the next one, and [RescheduleWorker] acts as
- * a safety net if the process was killed.
+ * The scheduling rules live in [AlarmPlanner] (pure Kotlin, unit tested); this
+ * class only translates the plan into `AlarmManager` calls. After a prayer fires
+ * the receiver immediately reschedules the next one, and [RescheduleWorker] acts
+ * as a safety net if the process was killed.
  */
 class PrayerAlarmScheduler(
     context: Context,
@@ -51,29 +56,97 @@ class PrayerAlarmScheduler(
             val location = locationRepository.current() ?: return@withLock
             if (!settings.notificationEnabled) {
                 cancelAll()
+                NextPrayerNotification.update(appContext)
                 return@withLock
             }
             scheduleInternal(settings, location)
+            NextPrayerNotification.update(appContext)
         }
 
     suspend fun scheduleInternal(
         settings: AppSettings,
         location: Location,
     ) {
-        val now = LocalDateTime.now(location.zoneId)
-        val next = nextPrayer(now, location, settings) ?: return
-        val triggerAt = next.second.atZone(location.zoneId).toInstant().toEpochMilli()
+        val zone = location.zoneId
+        val now = LocalDateTime.now(zone)
+        val today = prayers.timesFor(now.toLocalDate(), location, settings)
+        val tomorrow = prayers.timesFor(now.toLocalDate().plusDays(1), location, settings)
 
-        setAlarm(triggerAt, next.first, isReminder = false)
+        val plan =
+            AlarmPlanner.plan(
+                now = now,
+                today = today,
+                tomorrow = tomorrow,
+                preReminderEnabled = settings.preReminderEnabled,
+                defaultReminderMinutes = settings.preReminderMinutes,
+                perPrayerReminderMinutes = settings.perPrayerReminderMinutes,
+            )
 
-        if (settings.preReminderEnabled && settings.preReminderMinutes > 0) {
-            val reminderAt = triggerAt - settings.preReminderMinutes * 60_000L
-            if (reminderAt > System.currentTimeMillis()) {
-                setAlarm(reminderAt, next.first, isReminder = true)
+        val prayerAlarm = plan.prayer
+        if (prayerAlarm == null) {
+            cancelPrayer(REQUEST_PRAYER, PrayerAlarmReceiver.ACTION_PRAYER)
+        } else {
+            setAlarm(
+                triggerAt = prayerAlarm.epochMillis(zone),
+                prayer = prayerAlarm.prayer,
+                isReminder = false,
+            )
+            plan.safetyNetAt?.let {
+                RescheduleWorker.scheduleSafetyNet(appContext, it.atZone(zone).toInstant().toEpochMilli())
             }
         }
 
-        RescheduleWorker.scheduleSafetyNet(appContext, triggerAt)
+        val reminderAlarm = plan.reminder
+        if (reminderAlarm == null) {
+            cancelPrayer(REQUEST_REMINDER, PrayerAlarmReceiver.ACTION_REMINDER)
+        } else {
+            setAlarm(
+                triggerAt = reminderAlarm.epochMillis(zone),
+                prayer = reminderAlarm.prayer,
+                isReminder = true,
+                reminderMinutes =
+                    settings.perPrayerReminderMinutes[reminderAlarm.prayer]
+                        ?: settings.preReminderMinutes,
+            )
+        }
+
+        scheduleReligiousDay(settings, location)
+    }
+
+    /**
+     * Schedules the evening-before reminder for the next religious day.
+     * Only one event alarm is kept pending at a time.
+     */
+    suspend fun scheduleReligiousDay(
+        settings: AppSettings,
+        location: Location,
+    ) {
+        if (!settings.diniGunNotifications) {
+            cancelEvent()
+            return
+        }
+        val zone = location.zoneId
+        val now = ZonedDateTime.now(zone)
+        val events = IslamicEvents.upcoming(now.toLocalDate(), EVENT_LOOKAHEAD, settings.hicriOffsetDays)
+        val next = EventReminder.next(now, events, zone)
+        if (next == null) {
+            cancelEvent()
+            return
+        }
+        val manager = alarmManager ?: return
+        val triggerAt = next.second.toInstant().toEpochMilli()
+        val pending =
+            PendingIntent.getBroadcast(
+                appContext,
+                REQUEST_EVENT,
+                Intent(appContext, PrayerAlarmReceiver::class.java).apply {
+                    action = PrayerAlarmReceiver.ACTION_EVENT
+                    putExtra(PrayerAlarmReceiver.EXTRA_EVENT_KEY, next.first.key)
+                    putExtra(PrayerAlarmReceiver.EXTRA_TRIGGER_AT, triggerAt)
+                },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+        setRawAlarm(manager, triggerAt, pending)
     }
 
     /** Exposed for the widget and the "next prayer" card. */
@@ -83,10 +156,9 @@ class PrayerAlarmScheduler(
         settings: AppSettings,
     ): Pair<Prayer, LocalDateTime>? {
         val today = prayers.timesFor(now.toLocalDate(), location, settings)
-        val candidate = nextAfter(today, now)
-        if (candidate != null) return candidate
+        AlarmPlanner.nextPrayer(now, today)?.let { return it }
         val tomorrow = prayers.timesFor(now.toLocalDate().plusDays(1), location, settings)
-        return nextAfter(tomorrow, now)
+        return AlarmPlanner.nextPrayer(now, tomorrow)
     }
 
     suspend fun timesFor(
@@ -95,15 +167,11 @@ class PrayerAlarmScheduler(
         settings: AppSettings,
     ): PrayerTimes = prayers.timesFor(date, location, settings)
 
-    private fun nextAfter(
-        times: PrayerTimes,
-        now: LocalDateTime,
-    ): Pair<Prayer, LocalDateTime>? = times.asList().firstOrNull { it.second.isAfter(now) }
-
     private fun setAlarm(
         triggerAt: Long,
         prayer: Prayer,
         isReminder: Boolean,
+        reminderMinutes: Int = 0,
     ) {
         val manager = alarmManager ?: return
         val intent =
@@ -111,6 +179,7 @@ class PrayerAlarmScheduler(
                 action = if (isReminder) PrayerAlarmReceiver.ACTION_REMINDER else PrayerAlarmReceiver.ACTION_PRAYER
                 putExtra(PrayerAlarmReceiver.EXTRA_PRAYER, prayer.name)
                 putExtra(PrayerAlarmReceiver.EXTRA_TRIGGER_AT, triggerAt)
+                if (isReminder) putExtra(PrayerAlarmReceiver.EXTRA_REMINDER_MINUTES, reminderMinutes)
             }
         val pending =
             PendingIntent.getBroadcast(
@@ -119,18 +188,26 @@ class PrayerAlarmScheduler(
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
+        setRawAlarm(manager, triggerAt, pending)
+    }
 
+    private fun setRawAlarm(
+        manager: AlarmManager,
+        triggerAt: Long,
+        pending: PendingIntent,
+    ) {
         val canExact =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 manager.canScheduleExactAlarms()
             } else {
                 true
             }
-
         runCatching {
             if (canExact) {
                 manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)
             } else {
+                // Without the exact alarm permission a hair trigger alarm is the
+                // closest the platform allows; times may be a few minutes late.
                 manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)
             }
         }.onFailure {
@@ -139,39 +216,70 @@ class PrayerAlarmScheduler(
     }
 
     fun cancelAll() {
+        cancelPrayer(REQUEST_PRAYER, PrayerAlarmReceiver.ACTION_PRAYER)
+        cancelPrayer(REQUEST_REMINDER, PrayerAlarmReceiver.ACTION_REMINDER)
+        cancelEvent()
+    }
+
+    private fun cancelPrayer(
+        requestCode: Int,
+        action: String,
+    ) {
         val manager = alarmManager ?: return
-        listOf(REQUEST_PRAYER, REQUEST_REMINDER).forEach { requestCode ->
-            val intent = Intent(appContext, PrayerAlarmReceiver::class.java)
-            val pending =
-                PendingIntent.getBroadcast(
-                    appContext,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
-                )
-            if (pending != null) {
-                manager.cancel(pending)
-                pending.cancel()
-            }
+        val pending =
+            PendingIntent.getBroadcast(
+                appContext,
+                requestCode,
+                Intent(appContext, PrayerAlarmReceiver::class.java).apply { this.action = action },
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
+        if (pending != null) {
+            manager.cancel(pending)
+            pending.cancel()
+        }
+    }
+
+    private fun cancelEvent() {
+        val manager = alarmManager ?: return
+        val pending =
+            PendingIntent.getBroadcast(
+                appContext,
+                REQUEST_EVENT,
+                Intent(appContext, PrayerAlarmReceiver::class.java).apply {
+                    action = PrayerAlarmReceiver.ACTION_EVENT
+                },
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
+        if (pending != null) {
+            manager.cancel(pending)
+            pending.cancel()
         }
     }
 
     /** Debug helper used by the emulator verification script. */
-    fun pendingAlarmCount(): Int {
-        val manager = alarmManager ?: return 0
-        return listOf(REQUEST_PRAYER, REQUEST_REMINDER).count { requestCode ->
-            PendingIntent.getBroadcast(
-                appContext,
-                requestCode,
-                Intent(appContext, PrayerAlarmReceiver::class.java),
-                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
-            ) != null
-        }
-    }
+    fun pendingAlarmCount(): Int = listOf(REQUEST_PRAYER, REQUEST_REMINDER, REQUEST_EVENT).count(::isPending)
+
+    /** True when an alarm with [requestCode] is currently registered. */
+    fun isPending(requestCode: Int): Boolean =
+        PendingIntent.getBroadcast(
+            appContext,
+            requestCode,
+            Intent(appContext, PrayerAlarmReceiver::class.java).apply {
+                action =
+                    when (requestCode) {
+                        REQUEST_REMINDER -> PrayerAlarmReceiver.ACTION_REMINDER
+                        REQUEST_EVENT -> PrayerAlarmReceiver.ACTION_EVENT
+                        else -> PrayerAlarmReceiver.ACTION_PRAYER
+                    }
+            },
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+        ) != null
 
     companion object {
         const val REQUEST_PRAYER = 1101
         const val REQUEST_REMINDER = 1102
+        const val REQUEST_EVENT = 1103
+        private const val EVENT_LOOKAHEAD = 8
 
         fun epochToLocal(
             epochMillis: Long,

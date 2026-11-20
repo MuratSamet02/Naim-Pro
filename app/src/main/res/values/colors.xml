@@ -6,4 +6,6 @@
     <color name="brand_teal">#2E6F73</color>
     <color name="brand_gold">#C9A227</color>
     <color name="brand_gold_light">#F3D98A</color>
+    <color name="widget_on_surface">#F2F6F5</color>
+    <color name="widget_muted">#8FA9A5</color>
 </resources>

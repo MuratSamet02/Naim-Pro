@@ -32,11 +32,16 @@ class SettingsRepository(private val context: Context) {
         val notificationModes = stringPreferencesKey("notification_modes")
         val preReminderEnabled = booleanPreferencesKey("pre_reminder_enabled")
         val preReminderMinutes = intPreferencesKey("pre_reminder_minutes")
+        val perPrayerReminders = stringPreferencesKey("pre_reminder_per_prayer")
         val ezanVolume = intPreferencesKey("ezan_volume")
         val vibration = booleanPreferencesKey("vibration")
+        val ongoingNotification = booleanPreferencesKey("ongoing_notification")
         val salahTracking = booleanPreferencesKey("salah_tracking")
         val diniGunNotifications = booleanPreferencesKey("dini_gun_notifications")
         val camiMode = booleanPreferencesKey("cami_mode")
+        val camiModeMinutes = intPreferencesKey("cami_mode_minutes")
+        val camiModeFilter = stringPreferencesKey("cami_mode_filter")
+        val qiblaOffset = floatPreferencesKey("qibla_offset")
         val themeMode = stringPreferencesKey("theme_mode")
         val dynamicColor = booleanPreferencesKey("dynamic_color")
         val language = stringPreferencesKey("language")
@@ -73,11 +78,16 @@ class SettingsRepository(private val context: Context) {
             notificationModes = decodeModes(this[Keys.notificationModes]) ?: d.notificationModes,
             preReminderEnabled = orDefault(Keys.preReminderEnabled, d.preReminderEnabled),
             preReminderMinutes = orDefault(Keys.preReminderMinutes, d.preReminderMinutes),
+            perPrayerReminderMinutes = decodeReminders(this[Keys.perPrayerReminders]),
             ezanVolumePercent = orDefault(Keys.ezanVolume, d.ezanVolumePercent),
             vibrationEnabled = orDefault(Keys.vibration, d.vibrationEnabled),
+            ongoingNotificationEnabled = orDefault(Keys.ongoingNotification, d.ongoingNotificationEnabled),
             salahTrackingEnabled = orDefault(Keys.salahTracking, d.salahTrackingEnabled),
             diniGunNotifications = orDefault(Keys.diniGunNotifications, d.diniGunNotifications),
             camiModeEnabled = orDefault(Keys.camiMode, d.camiModeEnabled),
+            camiModeMinutes = orDefault(Keys.camiModeMinutes, d.camiModeMinutes),
+            camiModeFilter = CamiModeFilter.fromKey(this[Keys.camiModeFilter]),
+            qiblaCalibrationOffset = orDefault(Keys.qiblaOffset, d.qiblaCalibrationOffset),
             themeMode = enumOrDefault(this[Keys.themeMode], ThemeMode.entries, d.themeMode) { it.name },
             dynamicColor = orDefault(Keys.dynamicColor, d.dynamicColor),
             language = enumOrDefault(this[Keys.language], AppLanguage.entries, d.language) { it.tag },
@@ -111,11 +121,16 @@ class SettingsRepository(private val context: Context) {
         this[Keys.notificationModes] = encodeModes(settings.notificationModes)
         this[Keys.preReminderEnabled] = settings.preReminderEnabled
         this[Keys.preReminderMinutes] = settings.preReminderMinutes
+        this[Keys.perPrayerReminders] = encodeReminders(settings.perPrayerReminderMinutes)
         this[Keys.ezanVolume] = settings.ezanVolumePercent
         this[Keys.vibration] = settings.vibrationEnabled
+        this[Keys.ongoingNotification] = settings.ongoingNotificationEnabled
         this[Keys.salahTracking] = settings.salahTrackingEnabled
         this[Keys.diniGunNotifications] = settings.diniGunNotifications
         this[Keys.camiMode] = settings.camiModeEnabled
+        this[Keys.camiModeMinutes] = settings.camiModeMinutes
+        this[Keys.camiModeFilter] = settings.camiModeFilter.name
+        this[Keys.qiblaOffset] = settings.qiblaCalibrationOffset
         this[Keys.themeMode] = settings.themeMode.name
         this[Keys.dynamicColor] = settings.dynamicColor
         this[Keys.language] = settings.language.tag
@@ -128,6 +143,22 @@ class SettingsRepository(private val context: Context) {
 
     private fun encodeCorrections(corrections: Map<Prayer, Int>): String =
         Prayer.ALL.joinToString(",") { "${it.name}=${corrections[it] ?: 0}" }
+
+    private fun encodeReminders(reminders: Map<Prayer, Int>): String =
+        reminders.entries
+            .filter { it.value > 0 }
+            .joinToString(",") { "${it.key.name}=${it.value}" }
+
+    private fun decodeReminders(raw: String?): Map<Prayer, Int> {
+        if (raw.isNullOrBlank()) return emptyMap()
+        return raw.split(',').mapNotNull { entry ->
+            val parts = entry.split('=')
+            if (parts.size != 2) return@mapNotNull null
+            val prayer = Prayer.entries.firstOrNull { it.name == parts[0] } ?: return@mapNotNull null
+            val minutes = parts[1].toIntOrNull() ?: return@mapNotNull null
+            if (minutes <= 0) null else prayer to minutes
+        }.toMap()
+    }
 
     private fun decodeCorrections(raw: String?): Map<Prayer, Int> {
         if (raw.isNullOrBlank()) return emptyMap()
