@@ -12,6 +12,7 @@ hesaplama motoru özgündür.
 | Vakit hesaplama motoru (`domain/prayer`) | GPL-3.0-or-later — sıfırdan yazıldı, hiçbir kütüphaneden kopyalanmadı |
 | Hicri takvim dönüşümü (`domain/hijri`) | GPL-3.0-or-later — sıfırdan yazıldı |
 | Launcher ikonu, bildirim ikonu, widget görselleri | GPL-3.0-or-later — bu proje için özgün olarak üretildi |
+| Adaptive launcher ikonu (hilal + mihrap kemeri + açık kitap, koyu yeşil zemin) | GPL-3.0-or-later — proje sahibi tarafından bu uygulama için yaptırıldı; kaynak dosya `docs/branding/naim-pro-icon.jpeg` |
 
 ## Veri
 

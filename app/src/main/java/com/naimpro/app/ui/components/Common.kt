@@ -1,5 +1,6 @@
 package com.naimpro.app.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,8 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -32,10 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.naimpro.app.R
 import com.naimpro.app.domain.model.Prayer
-import com.naimpro.app.ui.theme.BrandDeep
 import com.naimpro.app.ui.theme.BrandGold
-import com.naimpro.app.ui.theme.BrandGoldLight
-import com.naimpro.app.ui.theme.BrandTeal
 
 /** Localised label for a prayer. */
 @Composable
@@ -51,29 +50,21 @@ fun prayerLabel(prayer: Prayer): String =
         },
     )
 
-/** The Naim Pro mark, drawn with pure Compose so no image assets are needed. */
+/** The Naim Pro mark: the same artwork as the launcher icon. */
 @Composable
 fun NaimMark(
     size: Dp = 48.dp,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    Image(
+        painter = painterResource(R.drawable.ic_launcher_foreground),
+        contentDescription = stringResource(R.string.app_name),
         modifier =
             modifier
                 .size(size)
-                .clip(CircleShape)
-                .background(
-                    Brush.verticalGradient(listOf(BrandTeal, BrandDeep)),
-                ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = "☾",
-            color = BrandGoldLight,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-        )
-    }
+                .clip(CircleShape),
+        contentScale = ContentScale.Crop,
+    )
 }
 
 /** Rounded surface used for every grouped block in the app. */
