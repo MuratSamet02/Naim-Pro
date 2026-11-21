@@ -323,3 +323,37 @@ Alt ajanlar aynı çalışma dizininde çalışır; çakışmayı önlemek için
   Özel font F7'de boyut bütçesi netleşince değerlendirilecek.
 - Sıradaki: **F3** — 81 il/ilçe kapsamı, ek vakitler, Kur'an/rehber/tesbihat/
   kaza.
+
+### Gün 2 — F3 devam, çalışma durduruldu (21.11.2026)
+
+Kullanıcı isteğiyle gün burada bırakıldı. Ağaç **kirli ve henüz tam kapıdan
+geçmedi**; aşağıdaki liste ertesi gün kaldığı yerden devam etmek için.
+
+- F3 kodu yazıldı (commit edilmedi):
+  - `domain/geo/TurkishProvinces` (81 il + takma adlar), `CityRepository`
+    il araması/`inProvince`/`provinceOf`, `LocationPickerScreen` 81 il → ilçe
+    seçici.
+  - `domain/prayer/ExtraTimes` (işrak, kerahat öğle/akşam, evvabin, teheccüd;
+    ana ekranda katlanır bölüm, kerahat kırmızı).
+  - `domain/qada/QadaProgress` + `QadaRepository`, Room **şema 2**
+    (`qada_debt`, `MIGRATION_1_2`, `DatabaseMigrations.ALL`), yedek şeması 2,
+    `QadaScreen`.
+  - `data/content/QuranIndex` (114 sure / 6236 ayet doğrulamalı),
+    `GuideContent` (abdest + namaz, tr/en/ar, orijinal metin),
+    `TesbihatContent` + `TesbihatScreen`, `QuranScreen`, `GuideScreen`.
+  - `androidTest/.../MigrationTest` (v1 verisinin korunduğunu doğrular) ve
+    `androidx.room:room-testing` bağımlılığı.
+- Test sayısı: **138 → 0 hata** (son tam koşu), üzerine F4 başlangıcı
+  `FastingPlan` (18 test) ve `ZakatCalculator` (14 test) eklendi; ikisi de
+  henüz derlenmedi.
+- Yeni launcher ikonu ayrı commit'te tamamlandı ve push'landı (`48d03d0`):
+  amblem kelime markasından ayrıldı, adaptive + monochrome katmanlar ve
+  legacy mipmap'ler yeniden üretildi, `NaimMark` aynı görseli kullanıyor,
+  kaynak `docs/branding/` + `ATTRIBUTION.md`.
+- **Devam ederken ilk iş:** `./gradlew.bat ktlintCheck detekt
+  testDebugUnitTest lintDebug assembleDebug assembleDebugAndroidTest`.
+  Beklenen riskler: yeni `fasting`/`zakat` dosyalarında ktlint satır
+  uzunluğu, `MigrationTest`'in CI'da ilk koşusu.
+- Sonra: F3 sürümünü `2000003` / `2.0.0-beta.3` yap, `PLAN.md` notunu
+  güncelle, commit + push + tag; ardından F4 UI'ı (`MoonPhase`/`ShareText`
+  modülleri henüz yazılmadı — ajan kotası doldu, ana ajan yazacak).
